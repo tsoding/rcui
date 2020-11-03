@@ -9,7 +9,7 @@ struct Rect {
 }
 
 enum Event {
-    Realign(HAlign, VAlign)
+    KeyStroke(i32),
 }
 
 trait Widget {
@@ -133,10 +133,56 @@ impl Widget for Text {
 
     fn handle_event(&mut self, event: &Event) {
         match event {
-            Event::Realign(halign, valign) => {
-                self.halign = *halign;
-                self.valign = *valign;
-            },
+            Event::KeyStroke(key) => {
+                match *key as u8 as char {
+                    'q' => {
+                        self.halign = HAlign::Left;
+                        self.valign = VAlign::Top;
+                    },
+
+                    'w' => {
+                        self.halign = HAlign::Centre;
+                        self.valign = VAlign::Top;
+                    },
+
+                    'e' => {
+                        self.halign = HAlign::Right;
+                        self.valign = VAlign::Top;
+                    },
+
+                    'a' => {
+                        self.halign = HAlign::Left;
+                        self.valign = VAlign::Centre;
+                    },
+
+                    's' => {
+                        self.halign = HAlign::Centre;
+                        self.valign = VAlign::Centre;
+                    },
+
+                    'd' => {
+                        self.halign = HAlign::Right;
+                        self.valign = VAlign::Centre;
+                    },
+
+                    'z' => {
+                        self.halign = HAlign::Left;
+                        self.valign = VAlign::Bottom;
+                    },
+
+                    'x' => {
+                        self.halign = HAlign::Centre;
+                        self.valign = VAlign::Bottom;
+                    },
+
+                    'c' => {
+                        self.halign = HAlign::Right;
+                        self.valign = VAlign::Bottom;
+                    },
+
+                    _ => {}
+                }
+            }
         }
     }
 }
@@ -186,21 +232,10 @@ fn main() {
 
         match key as u8 as char {
             't' => break,
-
-            'q' => ui.handle_event(&Event::Realign(HAlign::Left, VAlign::Top)),
-            'w' => ui.handle_event(&Event::Realign(HAlign::Centre, VAlign::Top)),
-            'e' => ui.handle_event(&Event::Realign(HAlign::Right, VAlign::Top)),
-
-            'a' => ui.handle_event(&Event::Realign(HAlign::Left, VAlign::Centre)),
-            's' => ui.handle_event(&Event::Realign(HAlign::Centre, VAlign::Centre)),
-            'd' => ui.handle_event(&Event::Realign(HAlign::Right, VAlign::Centre)),
-
-            'z' => ui.handle_event(&Event::Realign(HAlign::Left, VAlign::Bottom)),
-            'x' => ui.handle_event(&Event::Realign(HAlign::Centre, VAlign::Bottom)),
-            'c' => ui.handle_event(&Event::Realign(HAlign::Right, VAlign::Bottom)),
-            _ => {}
+            _ => {
+                ui.handle_event(&Event::KeyStroke(key));
+            }
         }
     }
-
     endwin();
 }
