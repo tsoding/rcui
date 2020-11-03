@@ -187,6 +187,35 @@ impl Widget for Text {
     }
 }
 
+struct ItemList<T> {
+    items: Vec<T>,
+}
+
+impl<T: ToString + Clone> Widget for ItemList<T> {
+    fn render(&self, rect: &Rect) {
+        for (i, item) in self.items.iter().enumerate() {
+            let text = Text {
+                text: item.to_string(),
+                halign: HAlign::Left,
+                valign: VAlign::Top
+            };
+            text.render(&Rect {
+                x: rect.x,
+                y: rect.y + i as f32,
+                w: rect.w,
+                h: 1.0,
+            });
+
+            if i as f32 >= rect.h {
+                break;
+            }
+        }
+    }
+
+    fn handle_event(&mut self, _event: &Event) {
+    }
+}
+
 fn screen_rect() -> Rect {
     let mut w: i32 = 0;
     let mut h: i32 = 0;
@@ -219,7 +248,13 @@ fn main() {
 
     // TODO: extract this to examples
     let mut ui = vbox(vec![
-        hbox(vec![ text("hello"), text("hello"), text("hello") ]),
+        hbox(vec![
+            Box::new(ItemList {
+                items: vec!["item1", "item2", "item3"]
+            }),
+            text("hello"),
+            text("hello"),
+        ]),
         hbox(vec![ text("world"), text("world"), text("world") ]),
         hbox(vec![ text("foo"), text("foo"), text("foo") ]),
         hbox(vec![ text("bar"), text("bar"), text("bar") ]),
