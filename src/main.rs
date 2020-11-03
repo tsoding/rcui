@@ -9,7 +9,7 @@ struct Rect {
 }
 
 enum Event {
-    Realign(HAlign)
+    Realign(HAlign, VAlign)
 }
 
 trait Widget {
@@ -74,24 +74,45 @@ enum HAlign {
     Right,
 }
 
+#[derive(Clone, Copy)]
+enum VAlign {
+    Top,
+    Centre,
+    Bottom
+}
+
 struct Text {
     text: String,
     halign: HAlign,
+    valign: VAlign,
 }
 
 impl Widget for Text {
     fn render(&self, rect: &Rect) {
-        mv(rect.y as i32, rect.x as i32);
-        // TODO: Text does not support wrapping around
         let s = self.text.get(..rect.w.floor() as usize).unwrap_or(&self.text);
         let n = s.len();
-        let free_space = rect.w - n as f32;
+        let free_hspace = rect.w - n as f32;
+        // TODO: Text does not support wrapping around
+        let free_vspace = rect.h - 1.0;
+
+        match self.valign {
+            VAlign::Top => {
+                mv(rect.y as i32, rect.x as i32);
+            },
+            VAlign::Centre => {
+                mv((rect.y + free_vspace * 0.5).floor() as i32, rect.x as i32);
+            },
+            VAlign::Bottom => {
+                mv((rect.y + free_vspace).floor() as i32, rect.x as i32);
+            },
+        }
+
         match self.halign {
             HAlign::Left => {
                 addstr(s);
             }
             HAlign::Centre => {
-                let padding = (free_space * 0.5).floor() as usize;
+                let padding = (free_hspace * 0.5).floor() as usize;
                 for _ in 0..padding {
                     addstr(" ");
                 }
@@ -101,7 +122,7 @@ impl Widget for Text {
                 }
             }
             HAlign::Right => {
-                let padding = free_space.floor() as usize;
+                let padding = free_hspace.floor() as usize;
                 for _ in 0..padding {
                     addstr(" ");
                 }
@@ -112,7 +133,10 @@ impl Widget for Text {
 
     fn handle_event(&mut self, event: &Event) {
         match event {
-            Event::Realign(halign) => self.halign = *halign,
+            Event::Realign(halign, valign) => {
+                self.halign = *halign;
+                self.valign = *valign;
+            },
         }
     }
 }
@@ -124,8 +148,8 @@ fn screen_rect() -> Rect {
     Rect {x: 0.0, y: 0.0, w: w as f32, h: h as f32}
 }
 
-fn text(text: &str, halign: HAlign) -> Box<dyn Widget> {
-    Box::new(Text { text: text.to_string(), halign })
+fn text(text: &str) -> Box<dyn Widget> {
+    Box::new(Text { text: text.to_string(), halign: HAlign::Left, valign: VAlign::Top })
 }
 
 fn hbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
@@ -148,12 +172,11 @@ fn main() {
     }));
 
     // TODO: extract this to examples
-    let halign = HAlign::Right;
     let mut ui = vbox(vec![
-        hbox(vec![ text("hello", halign), text("hello", halign), text("hello", halign) ]),
-        hbox(vec![ text("world", halign), text("world", halign), text("world", halign) ]),
-        hbox(vec![ text("foo", halign), text("foo", halign), text("foo", halign) ]),
-        hbox(vec![ text("bar", halign), text("bar", halign), text("bar", halign) ]),
+        hbox(vec![ text("hello"), text("hello"), text("hello") ]),
+        hbox(vec![ text("world"), text("world"), text("world") ]),
+        hbox(vec![ text("foo"), text("foo"), text("foo") ]),
+        hbox(vec![ text("bar"), text("bar"), text("bar") ]),
     ]);
 
     loop {
@@ -162,10 +185,19 @@ fn main() {
         let key = getch();
 
         match key as u8 as char {
-            'q' => break,
-            'z' => ui.handle_event(&Event::Realign(HAlign::Left)),
-            'x' => ui.handle_event(&Event::Realign(HAlign::Centre)),
-            'c' => ui.handle_event(&Event::Realign(HAlign::Right)),
+            't' => break,
+
+            'q' => ui.handle_event(&Event::Realign(HAlign::Left, VAlign::Top)),
+            'w' => ui.handle_event(&Event::Realign(HAlign::Centre, VAlign::Top)),
+            'e' => ui.handle_event(&Event::Realign(HAlign::Right, VAlign::Top)),
+
+            'a' => ui.handle_event(&Event::Realign(HAlign::Left, VAlign::Centre)),
+            's' => ui.handle_event(&Event::Realign(HAlign::Centre, VAlign::Centre)),
+            'd' => ui.handle_event(&Event::Realign(HAlign::Right, VAlign::Centre)),
+
+            'z' => ui.handle_event(&Event::Realign(HAlign::Left, VAlign::Bottom)),
+            'x' => ui.handle_event(&Event::Realign(HAlign::Centre, VAlign::Bottom)),
+            'c' => ui.handle_event(&Event::Realign(HAlign::Right, VAlign::Bottom)),
             _ => {}
         }
     }
