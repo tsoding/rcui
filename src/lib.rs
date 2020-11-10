@@ -210,7 +210,7 @@ impl<T: ToString + Clone> ItemList<T> {
         }
     }
 
-    // TODO: Operations to insert new items into the ItemList
+    // TODO(#8): Operations to insert new items into the ItemList
     // TODO: Operations to remove items from ItemList
 }
 
