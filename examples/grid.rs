@@ -4,6 +4,18 @@ struct MyText {
     text: Text,
 }
 
+impl MyText {
+    fn new(text: &str) -> Self {
+        Self {
+            text: Text::new(text)
+        }
+    }
+
+    fn wrap(text: &str) -> Box<Self> {
+        Box::new(Self::new(text))
+    }
+}
+
 impl Widget for MyText {
     fn render(&self, rect: &rcui::Rect) {
         self.text.render(rect)
@@ -63,16 +75,6 @@ impl Widget for MyText {
     }
 }
 
-pub fn my_text(text: &str) -> Box<dyn Widget> {
-    Box::new(MyText {
-        text: Text {
-            text: text.to_string(),
-            halign: HAlign::Left,
-            valign: VAlign::Top,
-        },
-    })
-}
-
 fn main() {
     rcui::exec(Proxy::wrap(
         |event| match event {
@@ -83,10 +85,10 @@ fn main() {
             }
         },
         vbox(vec![
-            hbox(vec![my_text("hello"), my_text("hello"), my_text("hello")]),
-            hbox(vec![my_text("world"), my_text("world"), my_text("world")]),
-            hbox(vec![my_text("foo"), my_text("foo"), my_text("foo")]),
-            hbox(vec![my_text("bar"), my_text("bar"), my_text("bar")]),
+            hbox(vec![MyText::wrap("hello"), MyText::wrap("hello"), MyText::wrap("hello")]),
+            hbox(vec![MyText::wrap("world"), MyText::wrap("world"), MyText::wrap("world")]),
+            hbox(vec![MyText::wrap("foo"), MyText::wrap("foo"), MyText::wrap("foo")]),
+            hbox(vec![MyText::wrap("bar"), MyText::wrap("bar"), MyText::wrap("bar")]),
         ]),
     ));
 

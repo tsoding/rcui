@@ -90,6 +90,21 @@ pub struct Text {
     pub valign: VAlign,
 }
 
+impl Text {
+    pub fn new(text: &str) -> Self {
+        Self {
+            text: text.to_string(),
+            halign: HAlign::Left,
+            valign: VAlign::Top,
+        }
+    }
+
+    pub fn wrap(text: &str) -> Box<Self> {
+        Box::new(Self::new(text))
+    }
+}
+
+
 impl Widget for Text {
     fn render(&self, rect: &Rect) {
         let s = self
@@ -211,14 +226,6 @@ pub fn screen_rect() -> Rect {
         w: w as f32,
         h: h as f32,
     }
-}
-
-pub fn text(text: &str) -> Box<dyn Widget> {
-    Box::new(Text {
-        text: text.to_string(),
-        halign: HAlign::Left,
-        valign: VAlign::Top,
-    })
 }
 
 pub fn hbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
