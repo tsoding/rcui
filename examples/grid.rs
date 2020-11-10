@@ -83,10 +83,7 @@ fn main() {
                 match event {
                     Event::KeyStroke(key) => {
                         match *key as u8 as char {
-                            't' => {
-                                println!("Quitting gracefully uwu");
-                                rcui::quit()
-                            }
+                            't' => rcui::quit(),
                             _ => {}
                         }
                     }
@@ -105,4 +102,6 @@ fn main() {
                 hbox(vec![ my_text("bar"), my_text("bar"), my_text("bar") ]),
             ]))
     );
+
+    println!("Quitting gracefully uwu");
 }
