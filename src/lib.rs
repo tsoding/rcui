@@ -19,7 +19,7 @@ pub trait Widget {
 }
 
 pub struct HBox {
-    pub widgets: Vec<Box<dyn Widget>>
+    pub widgets: Vec<Box<dyn Widget>>,
 }
 
 impl Widget for HBox {
@@ -79,7 +79,7 @@ pub enum HAlign {
 pub enum VAlign {
     Top,
     Centre,
-    Bottom
+    Bottom,
 }
 
 pub struct Text {
@@ -90,7 +90,10 @@ pub struct Text {
 
 impl Widget for Text {
     fn render(&self, rect: &Rect) {
-        let s = self.text.get(..rect.w.floor() as usize).unwrap_or(&self.text);
+        let s = self
+            .text
+            .get(..rect.w.floor() as usize)
+            .unwrap_or(&self.text);
         let n = s.len();
         let free_hspace = rect.w - n as f32;
         // TODO: Text does not support wrapping around
@@ -99,13 +102,13 @@ impl Widget for Text {
         match self.valign {
             VAlign::Top => {
                 mv(rect.y as i32, rect.x as i32);
-            },
+            }
             VAlign::Centre => {
                 mv((rect.y + free_vspace * 0.5).floor() as i32, rect.x as i32);
-            },
+            }
             VAlign::Bottom => {
                 mv((rect.y + free_vspace).floor() as i32, rect.x as i32);
-            },
+            }
         }
 
         match self.halign {
@@ -145,7 +148,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
             let text = Text {
                 text: item.to_string(),
                 halign: HAlign::Left,
-                valign: VAlign::Top
+                valign: VAlign::Top,
             };
             text.render(&Rect {
                 x: rect.x,
@@ -160,19 +163,27 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
         }
     }
 
-    fn handle_event(&mut self, _event: &Event) {
-    }
+    fn handle_event(&mut self, _event: &Event) {}
 }
 
 pub fn screen_rect() -> Rect {
     let mut w: i32 = 0;
     let mut h: i32 = 0;
     getmaxyx(stdscr(), &mut h, &mut w);
-    Rect {x: 0.0, y: 0.0, w: w as f32, h: h as f32}
+    Rect {
+        x: 0.0,
+        y: 0.0,
+        w: w as f32,
+        h: h as f32,
+    }
 }
 
 pub fn text(text: &str) -> Box<dyn Widget> {
-    Box::new(Text { text: text.to_string(), halign: HAlign::Left, valign: VAlign::Top })
+    Box::new(Text {
+        text: text.to_string(),
+        halign: HAlign::Left,
+        valign: VAlign::Top,
+    })
 }
 
 pub fn hbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
@@ -217,7 +228,7 @@ pub struct Proxy {
 
 impl Proxy {
     pub fn wrap(handler: fn(&Event), root: Box<dyn Widget>) -> Box<dyn Widget> {
-        Box::new(Self {root, handler})
+        Box::new(Self { root, handler })
     }
 }
 
