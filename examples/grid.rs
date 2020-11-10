@@ -1,8 +1,7 @@
-mod lib;
-use lib::{vbox, hbox, text, ItemList};
+use rcui::{vbox, hbox, text, ItemList};
 
 fn main() {
-    lib::exec(
+    rcui::exec(
         vbox(vec![
             hbox(vec![
                 Box::new(ItemList {
