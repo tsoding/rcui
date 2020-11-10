@@ -83,13 +83,7 @@ fn main() {
             }
         },
         vbox(vec![
-            hbox(vec![
-                Box::new(ItemList {
-                    items: vec!["item1", "item2", "item3"],
-                }),
-                my_text("hello"),
-                my_text("hello"),
-            ]),
+            hbox(vec![my_text("hello"), my_text("hello"), my_text("hello")]),
             hbox(vec![my_text("world"), my_text("world"), my_text("world")]),
             hbox(vec![my_text("foo"), my_text("foo"), my_text("foo")]),
             hbox(vec![my_text("bar"), my_text("bar"), my_text("bar")]),
