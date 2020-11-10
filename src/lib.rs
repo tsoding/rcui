@@ -1,3 +1,6 @@
+pub mod style;
+
+use ncurses::CURSOR_VISIBILITY::*;
 use ncurses::*;
 use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -14,7 +17,7 @@ pub enum Event {
 }
 
 pub trait Widget {
-    fn render(&self, rect: &Rect);
+    fn render(&mut self, rect: &Rect);
     fn handle_event(&mut self, event: &Event);
 }
 
@@ -22,8 +25,18 @@ pub struct HBox {
     pub widgets: Vec<Box<dyn Widget>>,
 }
 
+impl HBox {
+    pub fn new(widgets: Vec<Box<dyn Widget>>) -> Self {
+        Self { widgets }
+    }
+
+    pub fn wrap(widgets: Vec<Box<dyn Widget>>) -> Box<Self> {
+        Box::new(Self::new(widgets))
+    }
+}
+
 impl Widget for HBox {
-    fn render(&self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect) {
         let n = self.widgets.len();
         let widget_w = rect.w / n as f32;
         for i in 0..n {
@@ -47,8 +60,18 @@ pub struct VBox {
     pub widgets: Vec<Box<dyn Widget>>,
 }
 
+impl VBox {
+    pub fn new(widgets: Vec<Box<dyn Widget>>) -> Self {
+        Self { widgets }
+    }
+
+    pub fn wrap(widgets: Vec<Box<dyn Widget>>) -> Box<Self> {
+        Box::new(Self::new(widgets))
+    }
+}
+
 impl Widget for VBox {
-    fn render(&self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect) {
         let n = self.widgets.len();
         let widget_h = rect.h / n as f32;
         for i in 0..n {
@@ -88,8 +111,22 @@ pub struct Text {
     pub valign: VAlign,
 }
 
+impl Text {
+    pub fn new(text: &str) -> Self {
+        Self {
+            text: text.to_string(),
+            halign: HAlign::Left,
+            valign: VAlign::Top,
+        }
+    }
+
+    pub fn wrap(text: &str) -> Box<Self> {
+        Box::new(Self::new(text))
+    }
+}
+
 impl Widget for Text {
-    fn render(&self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect) {
         let s = self
             .text
             .get(..rect.w.floor() as usize)
@@ -138,28 +175,76 @@ impl Widget for Text {
     fn handle_event(&mut self, _event: &Event) {}
 }
 
-// TODO(#4): ItemList is not finished
 pub struct ItemList<T> {
     pub items: Vec<T>,
+    pub cursor: usize,
+    pub scroll: usize,
 }
 
-impl<T: ToString + Clone> Widget for ItemList<T> {
-    fn render(&self, rect: &Rect) {
-        for (i, item) in self.items.iter().enumerate() {
-            let text = Text {
-                text: item.to_string(),
-                halign: HAlign::Left,
-                valign: VAlign::Top,
-            };
-            text.render(&Rect {
-                x: rect.x,
-                y: rect.y + i as f32,
-                w: rect.w,
-                h: 1.0,
-            });
+impl<T: ToString + Clone> ItemList<T> {
+    pub fn new(items: Vec<T>) -> Self {
+        Self {
+            items,
+            cursor: 0,
+            scroll: 0,
+        }
+    }
 
-            if i as f32 >= rect.h {
-                break;
+    pub fn up(&mut self) {
+        if self.cursor > 0 {
+            self.cursor -= 1;
+        }
+    }
+
+    pub fn down(&mut self) {
+        if self.cursor < self.items.len() - 1 {
+            self.cursor += 1;
+        }
+    }
+
+    pub fn sync_scroll(&mut self, h: usize) {
+        if self.cursor >= self.scroll + h {
+            self.scroll = self.cursor - h + 1;
+        } else if self.cursor < self.scroll {
+            self.scroll = self.cursor;
+        }
+    }
+
+    // TODO(#8): Operations to insert new items into the ItemList
+    // TODO(#9): Operations to remove items from ItemList
+}
+
+// TODO(#10): EditField is not implemented
+
+impl<T: ToString + Clone> Widget for ItemList<T> {
+    fn render(&mut self, rect: &Rect) {
+        let h = rect.h.floor() as usize;
+        if h > 0 {
+            self.sync_scroll(h);
+            for i in 0..h {
+                if self.scroll + i < self.items.len() {
+                    let mut text = Text {
+                        text: self.items[i + self.scroll].to_string(),
+                        halign: HAlign::Left,
+                        valign: VAlign::Top,
+                    };
+
+                    let selected = i + self.scroll == self.cursor;
+                    let color_pair = if selected {
+                        style::CURSOR_PAIR
+                    } else {
+                        style::REGULAR_PAIR
+                    };
+
+                    attron(COLOR_PAIR(color_pair));
+                    text.render(&Rect {
+                        x: rect.x,
+                        y: rect.y + i as f32,
+                        w: rect.w,
+                        h: 1.0,
+                    });
+                    attroff(COLOR_PAIR(color_pair));
+                }
             }
         }
     }
@@ -179,22 +264,6 @@ pub fn screen_rect() -> Rect {
     }
 }
 
-pub fn text(text: &str) -> Box<dyn Widget> {
-    Box::new(Text {
-        text: text.to_string(),
-        halign: HAlign::Left,
-        valign: VAlign::Top,
-    })
-}
-
-pub fn hbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
-    Box::new(HBox { widgets })
-}
-
-pub fn vbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
-    Box::new(VBox { widgets })
-}
-
 static QUIT: AtomicBool = AtomicBool::new(false);
 
 pub fn quit() {
@@ -203,6 +272,13 @@ pub fn quit() {
 
 pub fn exec(mut ui: Box<dyn Widget>) {
     initscr();
+
+    start_color();
+    init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
+    init_pair(style::CURSOR_PAIR, COLOR_BLACK, COLOR_WHITE);
+    init_pair(style::UNFOCUSED_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
+
+    curs_set(CURSOR_INVISIBLE);
 
     set_hook(Box::new({
         let default_hook = take_hook();
@@ -222,25 +298,24 @@ pub fn exec(mut ui: Box<dyn Widget>) {
     endwin();
 }
 
-pub struct Proxy {
-    pub root: Box<dyn Widget>,
-    pub handler: fn(&Event),
+pub struct Proxy<T> {
+    pub root: T,
+    pub handler: fn(&mut T, &Event),
 }
 
-impl Proxy {
-    pub fn wrap(handler: fn(&Event), root: Box<dyn Widget>) -> Box<dyn Widget> {
+impl<T: Widget> Proxy<T> {
+    pub fn wrap(handler: fn(&mut T, &Event), root: T) -> Box<Self> {
         Box::new(Self { root, handler })
     }
 }
 
-impl Widget for Proxy {
-    fn render(&self, rect: &Rect) {
-        self.root.render(rect)
+impl<T: Widget> Widget for Proxy<T> {
+    fn render(&mut self, rect: &Rect) {
+        self.root.render(rect);
     }
 
     fn handle_event(&mut self, event: &Event) {
-        (self.handler)(event);
-        self.root.handle_event(event);
+        (self.handler)(&mut self.root, event);
     }
 }
 

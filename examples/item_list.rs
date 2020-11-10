@@ -1,10 +1,3 @@
-# rcui
-
-Simple TUI framework in Rust inspired by Qt.
-
-## Example
-
-```rust
 use rcui::*;
 
 fn main() {
@@ -18,16 +11,8 @@ fn main() {
             },
         },
         ItemList::new(vec![
-            "foo", "bar", "baz"
+            "foo", "bar", "baz", "test", "hello", "world", "dfsdjf", "sdfjksdf",
         ]),
     ));
     println!("Quiting gracefully uwu");
 }
-```
-
-## Quick Start
-
-```console
-$ cargo run --example grid
-$ cargo run --example item_list
-```
