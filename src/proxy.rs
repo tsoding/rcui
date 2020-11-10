@@ -6,8 +6,12 @@ pub struct Proxy<T> {
 }
 
 impl<T: Widget> Proxy<T> {
+    pub fn new(handler: fn(&mut T, &Event), root: T) -> Self {
+        Self { root, handler }
+    }
+
     pub fn wrap(handler: fn(&mut T, &Event), root: T) -> Box<Self> {
-        Box::new(Self { root, handler })
+        Box::new(Self::new(handler, root))
     }
 }
 
