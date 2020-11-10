@@ -17,7 +17,7 @@ impl MyText {
 }
 
 impl Widget for MyText {
-    fn render(&self, rect: &rcui::Rect) {
+    fn render(&mut self, rect: &rcui::Rect) {
         self.text.render(rect)
     }
 

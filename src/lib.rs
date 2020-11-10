@@ -1,6 +1,7 @@
 pub mod style;
 
 use ncurses::*;
+use ncurses::CURSOR_VISIBILITY::*;
 use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
 
@@ -16,7 +17,7 @@ pub enum Event {
 }
 
 pub trait Widget {
-    fn render(&self, rect: &Rect);
+    fn render(&mut self, rect: &Rect);
     fn handle_event(&mut self, event: &Event);
 }
 
@@ -35,7 +36,7 @@ impl HBox {
 }
 
 impl Widget for HBox {
-    fn render(&self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect) {
         let n = self.widgets.len();
         let widget_w = rect.w / n as f32;
         for i in 0..n {
@@ -70,7 +71,7 @@ impl VBox {
 }
 
 impl Widget for VBox {
-    fn render(&self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect) {
         let n = self.widgets.len();
         let widget_h = rect.h / n as f32;
         for i in 0..n {
@@ -126,7 +127,7 @@ impl Text {
 
 
 impl Widget for Text {
-    fn render(&self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect) {
         let s = self
             .text
             .get(..rect.w.floor() as usize)
@@ -202,21 +203,30 @@ impl<T: ToString + Clone> ItemList<T> {
             self.cursor += 1;
         }
     }
+
+    pub fn sync_scroll(&mut self, h: usize) {
+        if self.cursor >= self.scroll + h {
+            self.scroll = self.cursor - h + 1;
+        } else if self.cursor < self.scroll {
+            self.scroll = self.cursor;
+        }
+    }
 }
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
-    fn render(&self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect) {
         let h = rect.h.floor() as usize;
         if h > 0 {
+            self.sync_scroll(h);
             for i in 0..h {
                 if self.scroll + i < self.items.len() {
-                    let text = Text {
+                    let mut text = Text {
                         text: self.items[i + self.scroll].to_string(),
                         halign: HAlign::Left,
                         valign: VAlign::Top,
                     };
 
-                    let selected = i == self.cursor;
+                    let selected = i + self.scroll == self.cursor;
                     let color_pair = if selected {
                         style::CURSOR_PAIR
                     } else {
@@ -259,11 +269,13 @@ pub fn quit() {
 
 pub fn exec(mut ui: Box<dyn Widget>) {
     initscr();
-    start_color();
 
+    start_color();
     init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
     init_pair(style::CURSOR_PAIR, COLOR_BLACK, COLOR_WHITE);
     init_pair(style::UNFOCUSED_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
+
+    curs_set(CURSOR_INVISIBLE);
 
     set_hook(Box::new({
         let default_hook = take_hook();
@@ -295,7 +307,7 @@ impl<T: Widget> Proxy<T> {
 }
 
 impl<T: Widget> Widget for Proxy<T> {
-    fn render(&self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect) {
         self.root.render(rect);
     }
 
