@@ -214,7 +214,7 @@ impl<T: ToString + Clone> ItemList<T> {
     // TODO(#9): Operations to remove items from ItemList
 }
 
-// TODO: EditField is not implemented
+// TODO(#10): EditField is not implemented
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
     fn render(&mut self, rect: &Rect) {
