@@ -1,3 +1,5 @@
+pub mod style;
+
 use ncurses::*;
 use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -141,6 +143,28 @@ impl Widget for Text {
 // TODO(#4): ItemList is not finished
 pub struct ItemList<T> {
     pub items: Vec<T>,
+    pub cursor: usize,
+}
+
+impl<T: ToString + Clone> ItemList<T> {
+    pub fn new(items: Vec<T>) -> Self {
+        Self {
+            items,
+            cursor: 0,
+        }
+    }
+
+    pub fn up(&mut self) {
+        if self.cursor > 0 {
+            self.cursor -= 1;
+        }
+    }
+
+    pub fn down(&mut self) {
+        if self.cursor < self.items.len() - 1 {
+            self.cursor += 1;
+        }
+    }
 }
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
@@ -151,12 +175,22 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
                 halign: HAlign::Left,
                 valign: VAlign::Top,
             };
+
+            let selected = i == self.cursor;
+            let color_pair = if selected {
+                style::CURSOR_PAIR
+            } else {
+                style::REGULAR_PAIR
+            };
+
+            attron(COLOR_PAIR(color_pair));
             text.render(&Rect {
                 x: rect.x,
                 y: rect.y + i as f32,
                 w: rect.w,
                 h: 1.0,
             });
+            attroff(COLOR_PAIR(color_pair));
 
             if i as f32 >= rect.h {
                 break;
@@ -203,6 +237,11 @@ pub fn quit() {
 
 pub fn exec(mut ui: Box<dyn Widget>) {
     initscr();
+    start_color();
+
+    init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
+    init_pair(style::CURSOR_PAIR, COLOR_BLACK, COLOR_WHITE);
+    init_pair(style::UNFOCUSED_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
 
     set_hook(Box::new({
         let default_hook = take_hook();

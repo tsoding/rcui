@@ -12,9 +12,9 @@ fn main() {
                     }
                 }
             },
-            Box::new(ItemList {
-                items: vec!["foo", "bar", "baz"]
-            })
+            Box::new(
+                ItemList::new(vec!["foo", "bar", "baz"])
+            )
         )
     );
     println!("Quiting gracefully uwu");
