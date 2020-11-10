@@ -3,7 +3,6 @@ pub mod style;
 use ncurses::*;
 use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::cmp;
 
 pub struct Rect {
     pub x: f32,
@@ -180,6 +179,7 @@ impl Widget for Text {
 pub struct ItemList<T> {
     pub items: Vec<T>,
     pub cursor: usize,
+    pub scroll: usize,
 }
 
 impl<T: ToString + Clone> ItemList<T> {
@@ -187,6 +187,7 @@ impl<T: ToString + Clone> ItemList<T> {
         Self {
             items,
             cursor: 0,
+            scroll: 0,
         }
     }
 
@@ -205,31 +206,32 @@ impl<T: ToString + Clone> ItemList<T> {
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
     fn render(&self, rect: &Rect) {
-        for i in 0..cmp::min(self.items.len(), rect.h.floor() as usize) {
-            let text = Text {
-                text: self.items[i].to_string(),
-                halign: HAlign::Left,
-                valign: VAlign::Top,
-            };
+        let h = rect.h.floor() as usize;
+        if h > 0 {
+            for i in 0..h {
+                if self.scroll + i < self.items.len() {
+                    let text = Text {
+                        text: self.items[i + self.scroll].to_string(),
+                        halign: HAlign::Left,
+                        valign: VAlign::Top,
+                    };
 
-            let selected = i == self.cursor;
-            let color_pair = if selected {
-                style::CURSOR_PAIR
-            } else {
-                style::REGULAR_PAIR
-            };
+                    let selected = i == self.cursor;
+                    let color_pair = if selected {
+                        style::CURSOR_PAIR
+                    } else {
+                        style::REGULAR_PAIR
+                    };
 
-            attron(COLOR_PAIR(color_pair));
-            text.render(&Rect {
-                x: rect.x,
-                y: rect.y + i as f32,
-                w: rect.w,
-                h: 1.0,
-            });
-            attroff(COLOR_PAIR(color_pair));
-
-            if i as f32 >= rect.h {
-                break;
+                    attron(COLOR_PAIR(color_pair));
+                    text.render(&Rect {
+                        x: rect.x,
+                        y: rect.y + i as f32,
+                        w: rect.w,
+                        h: 1.0,
+                    });
+                    attroff(COLOR_PAIR(color_pair));
+                }
             }
         }
     }
