@@ -1,6 +1,6 @@
 # rcui
 
-Simple TUI framework in Rust inspired by Qt.
+Simple TUI framework in Rust.
 
 ## Example
 
