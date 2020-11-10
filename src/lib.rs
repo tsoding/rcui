@@ -138,7 +138,7 @@ impl Widget for Text {
     fn handle_event(&mut self, _event: &Event) {}
 }
 
-// TODO: ItemList is not finished
+// TODO(#4): ItemList is not finished
 pub struct ItemList<T> {
     pub items: Vec<T>,
 }
