@@ -96,7 +96,7 @@ impl Widget for Text {
             .unwrap_or(&self.text);
         let n = s.len();
         let free_hspace = rect.w - n as f32;
-        // TODO: Text does not support wrapping around
+        // TODO(#3): Text does not support wrapping around
         let free_vspace = rect.h - 1.0;
 
         match self.valign {
@@ -138,6 +138,7 @@ impl Widget for Text {
     fn handle_event(&mut self, _event: &Event) {}
 }
 
+// TODO: ItemList is not finished
 pub struct ItemList<T> {
     pub items: Vec<T>,
 }
@@ -242,3 +243,5 @@ impl Widget for Proxy {
         self.root.handle_event(event);
     }
 }
+
+// TODO: focus mechanism
