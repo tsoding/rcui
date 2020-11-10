@@ -209,3 +209,25 @@ pub fn exec(mut ui: Box<dyn Widget>) {
 
     endwin();
 }
+
+pub struct Proxy {
+    pub root: Box<dyn Widget>,
+    pub handler: fn(&Event),
+}
+
+impl Proxy {
+    pub fn new(handler: fn(&Event), root: Box<dyn Widget>) -> Box<dyn Widget> {
+        Box::new(Self {root, handler})
+    }
+}
+
+impl Widget for Proxy {
+    fn render(&self, rect: &Rect) {
+        self.root.render(rect)
+    }
+
+    fn handle_event(&mut self, event: &Event) {
+        (self.handler)(event);
+        self.root.handle_event(event);
+    }
+}
