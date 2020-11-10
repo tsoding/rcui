@@ -100,7 +100,8 @@ fn main() {
                 hbox(vec![ my_text("world"), my_text("world"), my_text("world") ]),
                 hbox(vec![ my_text("foo"), my_text("foo"), my_text("foo") ]),
                 hbox(vec![ my_text("bar"), my_text("bar"), my_text("bar") ]),
-            ]))
+            ])
+        )
     );
 
     println!("Quitting gracefully uwu");
