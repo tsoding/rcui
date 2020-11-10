@@ -211,7 +211,7 @@ impl<T: ToString + Clone> ItemList<T> {
     }
 
     // TODO(#8): Operations to insert new items into the ItemList
-    // TODO: Operations to remove items from ItemList
+    // TODO(#9): Operations to remove items from ItemList
 }
 
 // TODO: EditField is not implemented
