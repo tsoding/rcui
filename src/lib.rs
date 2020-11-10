@@ -82,9 +82,9 @@ pub enum VAlign {
 }
 
 pub struct Text {
-    text: String,
-    halign: HAlign,
-    valign: VAlign,
+    pub text: String,
+    pub halign: HAlign,
+    pub valign: VAlign,
 }
 
 impl Widget for Text {
@@ -131,60 +131,7 @@ impl Widget for Text {
         }
     }
 
-    fn handle_event(&mut self, event: &Event) {
-        match event {
-            Event::KeyStroke(key) => {
-                match *key as u8 as char {
-                    'q' => {
-                        self.halign = HAlign::Left;
-                        self.valign = VAlign::Top;
-                    },
-
-                    'w' => {
-                        self.halign = HAlign::Centre;
-                        self.valign = VAlign::Top;
-                    },
-
-                    'e' => {
-                        self.halign = HAlign::Right;
-                        self.valign = VAlign::Top;
-                    },
-
-                    'a' => {
-                        self.halign = HAlign::Left;
-                        self.valign = VAlign::Centre;
-                    },
-
-                    's' => {
-                        self.halign = HAlign::Centre;
-                        self.valign = VAlign::Centre;
-                    },
-
-                    'd' => {
-                        self.halign = HAlign::Right;
-                        self.valign = VAlign::Centre;
-                    },
-
-                    'z' => {
-                        self.halign = HAlign::Left;
-                        self.valign = VAlign::Bottom;
-                    },
-
-                    'x' => {
-                        self.halign = HAlign::Centre;
-                        self.valign = VAlign::Bottom;
-                    },
-
-                    'c' => {
-                        self.halign = HAlign::Right;
-                        self.valign = VAlign::Bottom;
-                    },
-
-                    _ => {}
-                }
-            }
-        }
-    }
+    fn handle_event(&mut self, _event: &Event) {}
 }
 
 pub struct ItemList<T> {
