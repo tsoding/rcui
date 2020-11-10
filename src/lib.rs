@@ -176,7 +176,6 @@ impl Widget for Text {
     fn handle_event(&mut self, _event: &Event) {}
 }
 
-// TODO(#4): ItemList is not finished
 pub struct ItemList<T> {
     pub items: Vec<T>,
     pub cursor: usize,
@@ -211,7 +210,12 @@ impl<T: ToString + Clone> ItemList<T> {
             self.scroll = self.cursor;
         }
     }
+
+    // TODO: Operations to insert new items into the ItemList
+    // TODO: Operations to remove items from ItemList
 }
+
+// TODO: EditField is not implemented
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
     fn render(&mut self, rect: &Rect) {
