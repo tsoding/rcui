@@ -9,11 +9,11 @@ use rcui::*;
 
 fn main() {
     rcui::exec(Proxy::wrap(
-        |root, event| match event {
+        |origin, event| match event {
             Event::KeyStroke(key) => match *key as u8 as char {
                 'q' => rcui::quit(),
-                's' => root.down(),
-                'w' => root.up(),
+                's' => origin.down(),
+                'w' => origin.up(),
                 _ => {}
             },
         },

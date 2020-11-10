@@ -77,7 +77,7 @@ impl Widget for MyText {
 
 fn main() {
     rcui::exec(Proxy::wrap(
-        |root, event| {
+        |origin, event| {
             match event {
                 Event::KeyStroke(key) => {
                     if *key as u8 as char == 't' {
@@ -85,7 +85,7 @@ fn main() {
                     }
                 }
             }
-            root.handle_event(event);
+            origin.handle_event(event);
         },
         VBox::new(vec![
             HBox::wrap(vec![
