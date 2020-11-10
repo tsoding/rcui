@@ -76,19 +76,22 @@ impl Widget for MyText {
 }
 
 fn main() {
-    rcui::exec(Proxy::wrap(
-        |event| match event {
-            Event::KeyStroke(key) => {
-                if *key as u8 as char == 't' {
-                    rcui::quit();
+    rcui::exec(HardProxy::wrap(
+        |root, event| {
+            match event {
+                Event::KeyStroke(key) => {
+                    if *key as u8 as char == 't' {
+                        rcui::quit();
+                    }
                 }
             }
+            root.handle_event(event);
         },
-        vbox(vec![
-            hbox(vec![MyText::wrap("hello"), MyText::wrap("hello"), MyText::wrap("hello")]),
-            hbox(vec![MyText::wrap("world"), MyText::wrap("world"), MyText::wrap("world")]),
-            hbox(vec![MyText::wrap("foo"), MyText::wrap("foo"), MyText::wrap("foo")]),
-            hbox(vec![MyText::wrap("bar"), MyText::wrap("bar"), MyText::wrap("bar")]),
+        VBox::new(vec![
+            HBox::wrap(vec![MyText::wrap("hello"), MyText::wrap("hello"), MyText::wrap("hello")]),
+            HBox::wrap(vec![MyText::wrap("world"), MyText::wrap("world"), MyText::wrap("world")]),
+            HBox::wrap(vec![MyText::wrap("foo"), MyText::wrap("foo"), MyText::wrap("foo")]),
+            HBox::wrap(vec![MyText::wrap("bar"), MyText::wrap("bar"), MyText::wrap("bar")]),
         ]),
     ));
 

@@ -24,6 +24,16 @@ pub struct HBox {
     pub widgets: Vec<Box<dyn Widget>>,
 }
 
+impl HBox {
+    pub fn new(widgets: Vec<Box<dyn Widget>>) -> Self {
+        Self { widgets }
+    }
+
+    pub fn wrap(widgets: Vec<Box<dyn Widget>>) -> Box<Self> {
+        Box::new(Self::new(widgets))
+    }
+}
+
 impl Widget for HBox {
     fn render(&self, rect: &Rect) {
         let n = self.widgets.len();
@@ -47,6 +57,16 @@ impl Widget for HBox {
 
 pub struct VBox {
     pub widgets: Vec<Box<dyn Widget>>,
+}
+
+impl VBox {
+    pub fn new(widgets: Vec<Box<dyn Widget>>) -> Self {
+        Self { widgets }
+    }
+
+    pub fn wrap(widgets: Vec<Box<dyn Widget>>) -> Box<Self> {
+        Box::new(Self::new(widgets))
+    }
 }
 
 impl Widget for VBox {
@@ -226,14 +246,6 @@ pub fn screen_rect() -> Rect {
         w: w as f32,
         h: h as f32,
     }
-}
-
-pub fn hbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
-    Box::new(HBox { widgets })
-}
-
-pub fn vbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
-    Box::new(VBox { widgets })
 }
 
 static QUIT: AtomicBool = AtomicBool::new(false);
