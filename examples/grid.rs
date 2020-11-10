@@ -7,7 +7,7 @@ struct MyText {
 impl MyText {
     fn new(text: &str) -> Self {
         Self {
-            text: Text::new(text)
+            text: Text::new(text),
         }
     }
 
@@ -88,10 +88,26 @@ fn main() {
             root.handle_event(event);
         },
         VBox::new(vec![
-            HBox::wrap(vec![MyText::wrap("hello"), MyText::wrap("hello"), MyText::wrap("hello")]),
-            HBox::wrap(vec![MyText::wrap("world"), MyText::wrap("world"), MyText::wrap("world")]),
-            HBox::wrap(vec![MyText::wrap("foo"), MyText::wrap("foo"), MyText::wrap("foo")]),
-            HBox::wrap(vec![MyText::wrap("bar"), MyText::wrap("bar"), MyText::wrap("bar")]),
+            HBox::wrap(vec![
+                MyText::wrap("hello"),
+                MyText::wrap("hello"),
+                MyText::wrap("hello"),
+            ]),
+            HBox::wrap(vec![
+                MyText::wrap("world"),
+                MyText::wrap("world"),
+                MyText::wrap("world"),
+            ]),
+            HBox::wrap(vec![
+                MyText::wrap("foo"),
+                MyText::wrap("foo"),
+                MyText::wrap("foo"),
+            ]),
+            HBox::wrap(vec![
+                MyText::wrap("bar"),
+                MyText::wrap("bar"),
+                MyText::wrap("bar"),
+            ]),
         ]),
     ));
 

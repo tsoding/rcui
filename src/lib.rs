@@ -1,7 +1,7 @@
 pub mod style;
 
-use ncurses::*;
 use ncurses::CURSOR_VISIBILITY::*;
+use ncurses::*;
 use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
 
@@ -124,7 +124,6 @@ impl Text {
         Box::new(Self::new(text))
     }
 }
-
 
 impl Widget for Text {
     fn render(&mut self, rect: &Rect) {
@@ -306,7 +305,7 @@ pub struct Proxy<T> {
 
 impl<T: Widget> Proxy<T> {
     pub fn wrap(handler: fn(&mut T, &Event), root: T) -> Box<Self> {
-        Box::new(Self {root, handler})
+        Box::new(Self { root, handler })
     }
 }
 
