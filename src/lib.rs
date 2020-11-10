@@ -244,4 +244,4 @@ impl Widget for Proxy {
     }
 }
 
-// TODO: focus mechanism
+// TODO(#5): focus mechanism
