@@ -1,9 +1,9 @@
-pub mod style;
 mod hbox;
-mod vbox;
-mod text;
 mod item_list;
 mod proxy;
+pub mod style;
+mod text;
+mod vbox;
 
 use ncurses::CURSOR_VISIBILITY::*;
 use ncurses::*;
@@ -11,10 +11,10 @@ use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
 
 pub use self::hbox::*;
-pub use self::vbox::*;
-pub use self::text::*;
 pub use self::item_list::*;
 pub use self::proxy::*;
+pub use self::text::*;
+pub use self::vbox::*;
 
 pub struct Rect {
     pub x: f32,
@@ -45,7 +45,6 @@ pub enum VAlign {
     Centre,
     Bottom,
 }
-
 
 pub fn screen_rect() -> Rect {
     let mut w: i32 = 0;
