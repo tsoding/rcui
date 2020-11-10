@@ -2,19 +2,20 @@ use rcui::*;
 
 fn main() {
     rcui::exec(
-        Proxy::wrap(
-            |event| {
+        HardProxy::wrap(
+            |root, event| {
                 match event {
                     Event::KeyStroke(key) => {
-                        if *key as u8 as char == 'q' {
-                            rcui::quit()
+                        match *key as u8 as char {
+                            'q' => rcui::quit(),
+                            's' => root.down(),
+                            'w' => root.up(),
+                            _ => {}
                         }
                     }
                 }
             },
-            Box::new(
-                ItemList::new(vec!["foo", "bar", "baz"])
-            )
+            ItemList::new(vec!["foo", "bar", "baz"])
         )
     );
     println!("Quiting gracefully uwu");
