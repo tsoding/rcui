@@ -78,13 +78,12 @@ pub fn my_text(text: &str) -> Box<dyn Widget> {
 
 fn main() {
     rcui::exec(
-        Proxy::new(
+        Proxy::wrap(
             |event| {
                 match event {
                     Event::KeyStroke(key) => {
-                        match *key as u8 as char {
-                            't' => rcui::quit(),
-                            _ => {}
+                        if *key as u8 as char == 't' {
+                            rcui::quit();
                         }
                     }
                 }

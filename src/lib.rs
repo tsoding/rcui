@@ -216,7 +216,7 @@ pub struct Proxy {
 }
 
 impl Proxy {
-    pub fn new(handler: fn(&Event), root: Box<dyn Widget>) -> Box<dyn Widget> {
+    pub fn wrap(handler: fn(&Event), root: Box<dyn Widget>) -> Box<dyn Widget> {
         Box::new(Self {root, handler})
     }
 }
