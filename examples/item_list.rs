@@ -15,7 +15,7 @@ fn main() {
                     }
                 }
             },
-            ItemList::new(vec!["foo", "bar", "baz"])
+            ItemList::new(vec!["foo", "bar", "baz", "test", "hello", "world", "dfsdjf", "sdfjksdf"])
         )
     );
     println!("Quiting gracefully uwu");

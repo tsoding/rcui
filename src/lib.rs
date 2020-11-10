@@ -3,6 +3,7 @@ pub mod style;
 use ncurses::*;
 use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::cmp;
 
 pub struct Rect {
     pub x: f32,
@@ -204,9 +205,9 @@ impl<T: ToString + Clone> ItemList<T> {
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
     fn render(&self, rect: &Rect) {
-        for (i, item) in self.items.iter().enumerate() {
+        for i in 0..cmp::min(self.items.len(), rect.h.floor() as usize) {
             let text = Text {
-                text: item.to_string(),
+                text: self.items[i].to_string(),
                 halign: HAlign::Left,
                 valign: VAlign::Top,
             };
