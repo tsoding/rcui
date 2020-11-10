@@ -2,7 +2,7 @@ use rcui::*;
 
 fn main() {
     rcui::exec(
-        HardProxy::wrap(
+        Proxy::wrap(
             |root, event| {
                 match event {
                     Event::KeyStroke(key) => {

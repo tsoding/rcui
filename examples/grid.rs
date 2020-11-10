@@ -76,7 +76,7 @@ impl Widget for MyText {
 }
 
 fn main() {
-    rcui::exec(HardProxy::wrap(
+    rcui::exec(Proxy::wrap(
         |root, event| {
             match event {
                 Event::KeyStroke(key) => {
