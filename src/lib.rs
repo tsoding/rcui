@@ -1,5 +1,6 @@
 use ncurses::*;
 use std::panic::{set_hook, take_hook};
+use std::sync::atomic::{AtomicBool, Ordering};
 
 pub struct Rect {
     pub x: f32,
@@ -182,6 +183,12 @@ pub fn vbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
     Box::new(VBox { widgets })
 }
 
+static QUIT: AtomicBool = AtomicBool::new(false);
+
+pub fn quit() {
+    QUIT.store(true, Ordering::Relaxed);
+}
+
 pub fn exec(mut ui: Box<dyn Widget>) {
     initscr();
 
@@ -193,12 +200,12 @@ pub fn exec(mut ui: Box<dyn Widget>) {
         }
     }));
 
-    loop {
+    while !QUIT.swap(false, Ordering::Relaxed) {
         erase();
         ui.render(&screen_rect());
         let key = getch();
         ui.handle_event(&Event::KeyStroke(key));
     }
 
-    // TODO: there is no proper exit condition for the event loop
+    endwin();
 }

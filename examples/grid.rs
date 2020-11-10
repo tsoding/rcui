@@ -75,20 +75,47 @@ pub fn my_text(text: &str) -> Box<dyn Widget> {
     })
 }
 
+struct Quit {
+    root: Box<dyn Widget>
+}
+
+impl Widget for Quit {
+    fn render(&self, rect: &Rect) {
+        self.root.render(rect)
+    }
+
+    fn handle_event(&mut self, event: &Event) {
+        match event {
+            Event::KeyStroke(key) => {
+                match *key as u8 as char {
+                    't' => {
+                        println!("Quitting gracefully uwu");
+                        rcui::quit()
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        self.root.handle_event(event);
+    }
+}
 
 fn main() {
     rcui::exec(
-        vbox(vec![
-            hbox(vec![
-                Box::new(ItemList {
-                    items: vec!["item1", "item2", "item3"]
-                }),
-                my_text("hello"),
-                my_text("hello"),
-            ]),
-            hbox(vec![ my_text("world"), my_text("world"), my_text("world") ]),
-            hbox(vec![ my_text("foo"), my_text("foo"), my_text("foo") ]),
-            hbox(vec![ my_text("bar"), my_text("bar"), my_text("bar") ]),
-        ])
+        Box::new(Quit {
+            root: vbox(vec![
+                hbox(vec![
+                    Box::new(ItemList {
+                        items: vec!["item1", "item2", "item3"]
+                    }),
+                    my_text("hello"),
+                    my_text("hello"),
+                ]),
+                hbox(vec![ my_text("world"), my_text("world"), my_text("world") ]),
+                hbox(vec![ my_text("foo"), my_text("foo"), my_text("foo") ]),
+                hbox(vec![ my_text("bar"), my_text("bar"), my_text("bar") ]),
+            ])
+        })
     );
 }
