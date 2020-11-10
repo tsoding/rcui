@@ -1,24 +1,25 @@
 use ncurses::*;
 use std::panic::{set_hook, take_hook};
+use std::sync::atomic::{AtomicBool, Ordering};
 
-struct Rect {
-    x: f32,
-    y: f32,
-    w: f32,
-    h: f32,
+pub struct Rect {
+    pub x: f32,
+    pub y: f32,
+    pub w: f32,
+    pub h: f32,
 }
 
-enum Event {
+pub enum Event {
     KeyStroke(i32),
 }
 
-trait Widget {
+pub trait Widget {
     fn render(&self, rect: &Rect);
     fn handle_event(&mut self, event: &Event);
 }
 
-struct HBox {
-    widgets: Vec<Box<dyn Widget>>
+pub struct HBox {
+    pub widgets: Vec<Box<dyn Widget>>,
 }
 
 impl Widget for HBox {
@@ -42,8 +43,8 @@ impl Widget for HBox {
     }
 }
 
-struct VBox {
-    widgets: Vec<Box<dyn Widget>>,
+pub struct VBox {
+    pub widgets: Vec<Box<dyn Widget>>,
 }
 
 impl Widget for VBox {
@@ -68,28 +69,31 @@ impl Widget for VBox {
 }
 
 #[derive(Clone, Copy)]
-enum HAlign {
+pub enum HAlign {
     Left,
     Centre,
     Right,
 }
 
 #[derive(Clone, Copy)]
-enum VAlign {
+pub enum VAlign {
     Top,
     Centre,
-    Bottom
+    Bottom,
 }
 
-struct Text {
-    text: String,
-    halign: HAlign,
-    valign: VAlign,
+pub struct Text {
+    pub text: String,
+    pub halign: HAlign,
+    pub valign: VAlign,
 }
 
 impl Widget for Text {
     fn render(&self, rect: &Rect) {
-        let s = self.text.get(..rect.w.floor() as usize).unwrap_or(&self.text);
+        let s = self
+            .text
+            .get(..rect.w.floor() as usize)
+            .unwrap_or(&self.text);
         let n = s.len();
         let free_hspace = rect.w - n as f32;
         // TODO: Text does not support wrapping around
@@ -98,13 +102,13 @@ impl Widget for Text {
         match self.valign {
             VAlign::Top => {
                 mv(rect.y as i32, rect.x as i32);
-            },
+            }
             VAlign::Centre => {
                 mv((rect.y + free_vspace * 0.5).floor() as i32, rect.x as i32);
-            },
+            }
             VAlign::Bottom => {
                 mv((rect.y + free_vspace).floor() as i32, rect.x as i32);
-            },
+            }
         }
 
         match self.halign {
@@ -131,64 +135,11 @@ impl Widget for Text {
         }
     }
 
-    fn handle_event(&mut self, event: &Event) {
-        match event {
-            Event::KeyStroke(key) => {
-                match *key as u8 as char {
-                    'q' => {
-                        self.halign = HAlign::Left;
-                        self.valign = VAlign::Top;
-                    },
-
-                    'w' => {
-                        self.halign = HAlign::Centre;
-                        self.valign = VAlign::Top;
-                    },
-
-                    'e' => {
-                        self.halign = HAlign::Right;
-                        self.valign = VAlign::Top;
-                    },
-
-                    'a' => {
-                        self.halign = HAlign::Left;
-                        self.valign = VAlign::Centre;
-                    },
-
-                    's' => {
-                        self.halign = HAlign::Centre;
-                        self.valign = VAlign::Centre;
-                    },
-
-                    'd' => {
-                        self.halign = HAlign::Right;
-                        self.valign = VAlign::Centre;
-                    },
-
-                    'z' => {
-                        self.halign = HAlign::Left;
-                        self.valign = VAlign::Bottom;
-                    },
-
-                    'x' => {
-                        self.halign = HAlign::Centre;
-                        self.valign = VAlign::Bottom;
-                    },
-
-                    'c' => {
-                        self.halign = HAlign::Right;
-                        self.valign = VAlign::Bottom;
-                    },
-
-                    _ => {}
-                }
-            }
-        }
-    }
+    fn handle_event(&mut self, _event: &Event) {}
 }
 
-struct ItemList<T> {
-    items: Vec<T>,
+pub struct ItemList<T> {
+    pub items: Vec<T>,
 }
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
@@ -197,7 +148,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
             let text = Text {
                 text: item.to_string(),
                 halign: HAlign::Left,
-                valign: VAlign::Top
+                valign: VAlign::Top,
             };
             text.render(&Rect {
                 x: rect.x,
@@ -212,30 +163,44 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
         }
     }
 
-    fn handle_event(&mut self, _event: &Event) {
-    }
+    fn handle_event(&mut self, _event: &Event) {}
 }
 
-fn screen_rect() -> Rect {
+pub fn screen_rect() -> Rect {
     let mut w: i32 = 0;
     let mut h: i32 = 0;
     getmaxyx(stdscr(), &mut h, &mut w);
-    Rect {x: 0.0, y: 0.0, w: w as f32, h: h as f32}
+    Rect {
+        x: 0.0,
+        y: 0.0,
+        w: w as f32,
+        h: h as f32,
+    }
 }
 
-fn text(text: &str) -> Box<dyn Widget> {
-    Box::new(Text { text: text.to_string(), halign: HAlign::Left, valign: VAlign::Top })
+pub fn text(text: &str) -> Box<dyn Widget> {
+    Box::new(Text {
+        text: text.to_string(),
+        halign: HAlign::Left,
+        valign: VAlign::Top,
+    })
 }
 
-fn hbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
+pub fn hbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
     Box::new(HBox { widgets })
 }
 
-fn vbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
+pub fn vbox(widgets: Vec<Box<dyn Widget>>) -> Box<dyn Widget> {
     Box::new(VBox { widgets })
 }
 
-fn main() {
+static QUIT: AtomicBool = AtomicBool::new(false);
+
+pub fn quit() {
+    QUIT.store(true, Ordering::Relaxed);
+}
+
+pub fn exec(mut ui: Box<dyn Widget>) {
     initscr();
 
     set_hook(Box::new({
@@ -246,31 +211,34 @@ fn main() {
         }
     }));
 
-    // TODO: extract this to examples
-    let mut ui = vbox(vec![
-        hbox(vec![
-            Box::new(ItemList {
-                items: vec!["item1", "item2", "item3"]
-            }),
-            text("hello"),
-            text("hello"),
-        ]),
-        hbox(vec![ text("world"), text("world"), text("world") ]),
-        hbox(vec![ text("foo"), text("foo"), text("foo") ]),
-        hbox(vec![ text("bar"), text("bar"), text("bar") ]),
-    ]);
-
-    loop {
+    while !QUIT.swap(false, Ordering::Relaxed) {
         erase();
         ui.render(&screen_rect());
         let key = getch();
-
-        match key as u8 as char {
-            't' => break,
-            _ => {
-                ui.handle_event(&Event::KeyStroke(key));
-            }
-        }
+        ui.handle_event(&Event::KeyStroke(key));
     }
+
     endwin();
+}
+
+pub struct Proxy {
+    pub root: Box<dyn Widget>,
+    pub handler: fn(&Event),
+}
+
+impl Proxy {
+    pub fn wrap(handler: fn(&Event), root: Box<dyn Widget>) -> Box<dyn Widget> {
+        Box::new(Self { root, handler })
+    }
+}
+
+impl Widget for Proxy {
+    fn render(&self, rect: &Rect) {
+        self.root.render(rect)
+    }
+
+    fn handle_event(&mut self, event: &Event) {
+        (self.handler)(event);
+        self.root.handle_event(event);
+    }
 }
