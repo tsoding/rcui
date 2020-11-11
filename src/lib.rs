@@ -1,3 +1,4 @@
+mod edit_field;
 mod hbox;
 mod item_list;
 mod proxy;
@@ -10,6 +11,7 @@ use ncurses::*;
 use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
 
+pub use self::edit_field::*;
 pub use self::hbox::*;
 pub use self::item_list::*;
 pub use self::proxy::*;

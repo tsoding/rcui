@@ -40,8 +40,6 @@ impl<T: ToString + Clone> ItemList<T> {
     // TODO(#14): Operations for page-up/page-down for ItemList
 }
 
-// TODO(#10): EditField is not implemented
-
 impl<T: ToString + Clone> Widget for ItemList<T> {
     fn render(&mut self, rect: &Rect) {
         let h = rect.h.floor() as usize;
