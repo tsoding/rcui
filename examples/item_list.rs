@@ -2,17 +2,15 @@ use rcui::*;
 
 fn main() {
     rcui::exec(Proxy::wrap(
-        |origin, event| match event {
+        |list, event| match event {
             Event::KeyStroke(key) => match *key as u8 as char {
                 'q' => rcui::quit(),
-                's' => origin.down(),
-                'w' => origin.up(),
+                'j' => list.down(),
+                'k' => list.up(),
                 _ => {}
             },
         },
-        ItemList::new(vec![
-            "foo", "bar", "baz", "test", "hello", "world", "dfsdjf", "sdfjksdf",
-        ]),
+        ItemList::new((0..100).map(|x| format!("item-{:02}", x)).collect()),
     ));
     println!("Quiting gracefully uwu");
 }
