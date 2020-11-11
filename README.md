@@ -28,6 +28,6 @@ fn main() {
 ## Quick Start
 
 ```console
-$ cargo run --example grid
-$ cargo run --example item_list
+$ cargo run --example 01_grid
+$ cargo run --example 02_item_list
 ```
