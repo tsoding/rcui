@@ -1,5 +1,19 @@
 use super::*;
 
+#[derive(Clone, Copy)]
+pub enum HAlign {
+    Left,
+    Centre,
+    Right,
+}
+
+#[derive(Clone, Copy)]
+pub enum VAlign {
+    Top,
+    Centre,
+    Bottom,
+}
+
 pub struct Text {
     pub text: String,
     pub halign: HAlign,

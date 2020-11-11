@@ -34,20 +34,6 @@ pub trait Widget {
     fn handle_event(&mut self, event: &Event);
 }
 
-#[derive(Clone, Copy)]
-pub enum HAlign {
-    Left,
-    Centre,
-    Right,
-}
-
-#[derive(Clone, Copy)]
-pub enum VAlign {
-    Top,
-    Centre,
-    Bottom,
-}
-
 pub fn screen_rect() -> Rect {
     let mut w: i32 = 0;
     let mut h: i32 = 0;
