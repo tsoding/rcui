@@ -21,7 +21,7 @@ fn main() {
         },
         ItemList::new((0..100).map(|x| format!("item-{:02}", x)).collect()),
     ));
-    println!("Quiting gracefully uwu");
+    println!("Quitting gracefully uwu");
 }
 ```
 
