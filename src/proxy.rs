@@ -16,8 +16,8 @@ impl<T: Widget> Proxy<T> {
 }
 
 impl<T: Widget> Widget for Proxy<T> {
-    fn render(&mut self, rect: &Rect) {
-        self.origin.render(rect);
+    fn render(&mut self, rect: &Rect, active: bool) {
+        self.origin.render(rect, active);
     }
 
     fn handle_event(&mut self, event: &Event) {

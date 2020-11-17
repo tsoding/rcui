@@ -35,7 +35,7 @@ impl Text {
 }
 
 impl Widget for Text {
-    fn render(&mut self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect, _active: bool) {
         let s = self
             .text
             .get(..rect.w.floor() as usize)

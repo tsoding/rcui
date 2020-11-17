@@ -45,7 +45,7 @@ impl<T: ToString + Clone> ItemList<T> {
 }
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
-    fn render(&mut self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect, active: bool) {
         let h = rect.h.floor() as usize;
         if h > 0 {
             self.sync_scroll(h);
@@ -70,7 +70,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
                         y: rect.y + i as f32,
                         w: rect.w,
                         h: 1.0,
-                    });
+                    }, active);
                     attroff(COLOR_PAIR(color_pair));
                 }
             }

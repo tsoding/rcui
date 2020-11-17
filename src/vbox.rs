@@ -15,7 +15,7 @@ impl VBox {
 }
 
 impl Widget for VBox {
-    fn render(&mut self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect, active: bool) {
         let n = self.widgets.len();
         let widget_h = rect.h / n as f32;
         for i in 0..n {
@@ -24,7 +24,7 @@ impl Widget for VBox {
                 y: rect.y + widget_h * i as f32,
                 w: rect.w,
                 h: widget_h,
-            })
+            }, active)
         }
     }
 

@@ -15,7 +15,7 @@ impl HBox {
 }
 
 impl Widget for HBox {
-    fn render(&mut self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect, active: bool) {
         let n = self.widgets.len();
         let widget_w = rect.w / n as f32;
         for i in 0..n {
@@ -24,7 +24,7 @@ impl Widget for HBox {
                 y: rect.y,
                 w: widget_w,
                 h: rect.h,
-            })
+            }, active)
         }
     }
 

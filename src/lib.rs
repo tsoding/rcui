@@ -30,7 +30,7 @@ pub enum Event {
 }
 
 pub trait Widget {
-    fn render(&mut self, rect: &Rect);
+    fn render(&mut self, rect: &Rect, active: bool);
     fn handle_event(&mut self, event: &Event);
 }
 
@@ -72,7 +72,7 @@ pub fn exec(mut ui: Box<dyn Widget>) {
 
     while !QUIT.swap(false, Ordering::Relaxed) {
         erase();
-        ui.render(&screen_rect());
+        ui.render(&screen_rect(), true);
         let key = getch();
         ui.handle_event(&Event::KeyStroke(key));
     }
