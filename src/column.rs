@@ -1,10 +1,10 @@
 use super::*;
 
-pub struct VBox {
+pub struct Column {
     pub xbox: XBox
 }
 
-impl VBox {
+impl Column {
     pub fn new(widgets: Vec<Box<dyn Widget>>) -> Self {
         Self { xbox: XBox::new(widgets) }
     }
@@ -14,7 +14,7 @@ impl VBox {
     }
 }
 
-impl Widget for VBox {
+impl Widget for Column {
     fn render(&mut self, rect: &Rect, active: bool) {
         let n = self.xbox.widgets.len();
         let widget_h = rect.h / n as f32;

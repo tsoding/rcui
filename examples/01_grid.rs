@@ -20,7 +20,7 @@ fn main() {
             }
             origin.handle_event(event);
         },
-        VBox::new(vec![
+        Column::new(vec![
             Row::wrap(vec![
                 text_cell("hello"),
                 text_cell("hello"),
