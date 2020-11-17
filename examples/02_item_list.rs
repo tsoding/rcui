@@ -8,7 +8,9 @@ fn main() {
                 'j' => list.down(),
                 'k' => list.up(),
                 _ => {}
-            },
+            }
+
+            _ => {}
         },
         ItemList::new((0..100).map(|x| format!("item-{:02}", x)).collect()),
     ));
