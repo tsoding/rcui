@@ -25,7 +25,7 @@ fn main() {
                     _ => hbox.handle_event(event),
                 },
             },
-            HBox::new(
+            Row::new(
                 vec![item_list_controls(left_list),
                      item_list_controls(right_list)])));
 }

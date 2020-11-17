@@ -21,18 +21,18 @@ fn main() {
             origin.handle_event(event);
         },
         VBox::new(vec![
-            HBox::wrap(vec![
+            Row::wrap(vec![
                 text_cell("hello"),
                 text_cell("hello"),
                 text_cell("hello"),
             ]),
-            HBox::wrap(vec![
+            Row::wrap(vec![
                 text_cell("world"),
                 text_cell("world"),
                 text_cell("world"),
             ]),
-            HBox::wrap(vec![text_cell("foo"), text_cell("foo"), text_cell("foo")]),
-            HBox::wrap(vec![text_cell("bar"), text_cell("bar"), text_cell("bar")]),
+            Row::wrap(vec![text_cell("foo"), text_cell("foo"), text_cell("foo")]),
+            Row::wrap(vec![text_cell("bar"), text_cell("bar"), text_cell("bar")]),
         ]),
     ));
 

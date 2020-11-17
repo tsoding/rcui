@@ -1,12 +1,10 @@
 use super::*;
 
-// TODO: HBox -> Row, VBox -> Column, XBox -> Container
-
-pub struct HBox {
+pub struct Row {
     pub xbox: XBox
 }
 
-impl HBox {
+impl Row {
     pub fn new(widgets: Vec<Box<dyn Widget>>) -> Self {
         Self { xbox: XBox::new(widgets) }
     }
@@ -24,7 +22,7 @@ impl HBox {
     }
 }
 
-impl Widget for HBox {
+impl Widget for Row {
     fn render(&mut self, rect: &Rect, active: bool) {
         let n = self.xbox.widgets.len();
         let widget_w = rect.w / n as f32;

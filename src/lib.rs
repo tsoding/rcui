@@ -1,5 +1,5 @@
 mod edit_field;
-mod hbox;
+mod row;
 mod item_list;
 mod proxy;
 pub mod style;
@@ -13,7 +13,7 @@ use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
 
 pub use self::edit_field::*;
-pub use self::hbox::*;
+pub use self::row::*;
 pub use self::item_list::*;
 pub use self::proxy::*;
 pub use self::text::*;
