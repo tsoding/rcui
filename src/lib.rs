@@ -106,4 +106,3 @@ pub fn exec(mut ui: Box<dyn Widget>) {
     endwin();
 }
 
-// TODO(#5): focus mechanism
