@@ -59,7 +59,11 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
 
                     let selected = i + self.scroll == self.cursor;
                     let color_pair = if selected {
-                        style::CURSOR_PAIR
+                        if active {
+                            style::CURSOR_PAIR
+                        } else {
+                            style::INACTIVE_CURSOR_PAIR
+                        }
                     } else {
                         style::REGULAR_PAIR
                     };

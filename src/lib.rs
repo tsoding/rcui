@@ -60,7 +60,7 @@ pub fn exec(mut ui: Box<dyn Widget>) {
     start_color();
     init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
     init_pair(style::CURSOR_PAIR, COLOR_BLACK, COLOR_WHITE);
-    init_pair(style::UNFOCUSED_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
+    init_pair(style::INACTIVE_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
 
     curs_set(CURSOR_INVISIBLE);
 
