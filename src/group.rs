@@ -1,11 +1,11 @@
 use super::*;
 
-pub struct XBox {
+pub struct Group {
     pub widgets: Vec<Box<dyn Widget>>,
     pub focus: usize
 }
 
-impl XBox {
+impl Group {
     pub fn new(widgets: Vec<Box<dyn Widget>>) -> Self {
         Self { widgets, focus: 0 }
     }
@@ -31,7 +31,7 @@ impl XBox {
     }
 }
 
-impl Widget for XBox {
+impl Widget for Group {
     fn render(&mut self, _rect: &Rect, _active: bool) {}
 
     fn handle_event(&mut self, event: &Event) {

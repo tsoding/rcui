@@ -5,7 +5,7 @@ mod proxy;
 pub mod style;
 mod text;
 mod column;
-mod xbox;
+mod group;
 
 use ncurses::CURSOR_VISIBILITY::*;
 use ncurses::*;
@@ -18,7 +18,7 @@ pub use self::item_list::*;
 pub use self::proxy::*;
 pub use self::text::*;
 pub use self::column::*;
-pub use self::xbox::*;
+pub use self::group::*;
 
 pub struct Rect {
     pub x: f32,
