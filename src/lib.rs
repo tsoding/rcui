@@ -5,6 +5,7 @@ mod proxy;
 pub mod style;
 mod text;
 mod vbox;
+mod xbox;
 
 use ncurses::CURSOR_VISIBILITY::*;
 use ncurses::*;
@@ -17,6 +18,7 @@ pub use self::item_list::*;
 pub use self::proxy::*;
 pub use self::text::*;
 pub use self::vbox::*;
+pub use self::xbox::*;
 
 pub struct Rect {
     pub x: f32,
