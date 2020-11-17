@@ -56,7 +56,7 @@ pub fn screen_rect() -> Rect {
 static mut EVENT_QUEUE: Option<VecDeque<Event>> = None;
 
 pub fn push_event(event: Event) {
-    // TODO: get rid of unsafe-s in EVENT_QUEUE handling
+    // TODO(#20): get rid of unsafe-s in EVENT_QUEUE handling
     unsafe {
         EVENT_QUEUE.as_mut().unwrap().push_back(event);
     }
