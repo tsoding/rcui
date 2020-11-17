@@ -107,4 +107,3 @@ pub fn exec(mut ui: Box<dyn Widget>) {
 }
 
 // TODO(#5): focus mechanism
-// TODO(#13): event mechanism extension that enables with signaling from the bottom of the UI tree to the top
