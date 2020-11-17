@@ -17,6 +17,8 @@ fn main() {
                         rcui::quit();
                     }
                 }
+
+                _ => {}
             }
             origin.handle_event(event);
         },

@@ -6,11 +6,12 @@ pub mod style;
 mod text;
 mod column;
 mod group;
+mod dummy;
 
 use ncurses::CURSOR_VISIBILITY::*;
 use ncurses::*;
 use std::panic::{set_hook, take_hook};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::collections::VecDeque;
 
 pub use self::edit_field::*;
 pub use self::row::*;
@@ -19,6 +20,7 @@ pub use self::proxy::*;
 pub use self::text::*;
 pub use self::column::*;
 pub use self::group::*;
+pub use self::dummy::*;
 
 pub struct Rect {
     pub x: f32,
@@ -28,8 +30,11 @@ pub struct Rect {
 }
 
 pub enum Event {
+    Quit,
     KeyStroke(i32),
+    Message(String),
 }
+
 
 pub trait Widget {
     fn render(&mut self, rect: &Rect, active: bool);
@@ -48,13 +53,24 @@ pub fn screen_rect() -> Rect {
     }
 }
 
-static QUIT: AtomicBool = AtomicBool::new(false);
+static mut EVENT_QUEUE: Option<VecDeque<Event>> = None;
+
+pub fn push_event(event: Event) {
+    // TODO(#20): get rid of unsafe-s in EVENT_QUEUE handling
+    unsafe {
+        EVENT_QUEUE.as_mut().unwrap().push_back(event);
+    }
+}
 
 pub fn quit() {
-    QUIT.store(true, Ordering::Relaxed);
+    push_event(Event::Quit);
 }
 
 pub fn exec(mut ui: Box<dyn Widget>) {
+    unsafe {
+        EVENT_QUEUE = Some(VecDeque::new());
+    }
+
     initscr();
 
     start_color();
@@ -72,11 +88,19 @@ pub fn exec(mut ui: Box<dyn Widget>) {
         }
     }));
 
-    while !QUIT.swap(false, Ordering::Relaxed) {
+    let queue = unsafe { EVENT_QUEUE.as_mut().unwrap() };
+    let mut quit = false;
+    while !quit {
         erase();
         ui.render(&screen_rect(), true);
         let key = getch();
-        ui.handle_event(&Event::KeyStroke(key));
+        queue.push_back(Event::KeyStroke(key));
+        while !queue.is_empty() {
+            queue.pop_front().map(|event| match event {
+                Event::Quit => quit = true,
+                _ => ui.handle_event(&event),
+            });
+        }
     }
 
     endwin();

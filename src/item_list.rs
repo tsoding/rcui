@@ -26,7 +26,8 @@ impl<T: ToString + Clone> ItemList<T> {
     }
 
     pub fn down(&mut self) {
-        if self.cursor < self.items.len() - 1 {
+        let n = self.items.len();
+        if n > 0 && self.cursor < n - 1 {
             self.cursor += 1;
         }
     }
@@ -37,6 +38,14 @@ impl<T: ToString + Clone> ItemList<T> {
         } else if self.cursor < self.scroll {
             self.scroll = self.cursor;
         }
+    }
+
+    pub fn push(&mut self, item: T) {
+        self.items.push(item)
+    }
+
+    pub fn remove(&mut self) -> T {
+        self.items.remove(self.cursor)
     }
 
     // TODO(#8): Operations to insert new items into the ItemList

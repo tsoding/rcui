@@ -7,7 +7,9 @@ fn item_list_controls<T: ToString + Clone>(item_list: ItemList<T>) -> Box<Proxy<
                 'j' => list.down(),
                 'k' => list.up(),
                 _ => {}
-            },
+            }
+
+            _ => {}
         },
         item_list)
 }
@@ -23,7 +25,9 @@ fn main() {
                     'q' => rcui::quit(),
                     '\t' => hbox.focus_next(),
                     _ => hbox.handle_event(event),
-                },
+                }
+
+                _ => {}
             },
             Row::new(
                 vec![item_list_controls(left_list),
