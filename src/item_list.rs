@@ -15,6 +15,10 @@ impl<T: ToString + Clone> ItemList<T> {
         }
     }
 
+    pub fn wrap(items: Vec<T>) -> Box<Self> {
+        Box::new(Self::new(items))
+    }
+
     pub fn up(&mut self) {
         if self.cursor > 0 {
             self.cursor -= 1;
