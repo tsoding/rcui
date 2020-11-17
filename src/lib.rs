@@ -1,10 +1,11 @@
 mod edit_field;
-mod hbox;
+mod row;
 mod item_list;
 mod proxy;
 pub mod style;
 mod text;
-mod vbox;
+mod column;
+mod group;
 
 use ncurses::CURSOR_VISIBILITY::*;
 use ncurses::*;
@@ -12,11 +13,12 @@ use std::panic::{set_hook, take_hook};
 use std::sync::atomic::{AtomicBool, Ordering};
 
 pub use self::edit_field::*;
-pub use self::hbox::*;
+pub use self::row::*;
 pub use self::item_list::*;
 pub use self::proxy::*;
 pub use self::text::*;
-pub use self::vbox::*;
+pub use self::column::*;
+pub use self::group::*;
 
 pub struct Rect {
     pub x: f32,
@@ -30,7 +32,7 @@ pub enum Event {
 }
 
 pub trait Widget {
-    fn render(&mut self, rect: &Rect);
+    fn render(&mut self, rect: &Rect, active: bool);
     fn handle_event(&mut self, event: &Event);
 }
 
@@ -58,7 +60,7 @@ pub fn exec(mut ui: Box<dyn Widget>) {
     start_color();
     init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
     init_pair(style::CURSOR_PAIR, COLOR_BLACK, COLOR_WHITE);
-    init_pair(style::UNFOCUSED_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
+    init_pair(style::INACTIVE_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
 
     curs_set(CURSOR_INVISIBLE);
 
@@ -72,7 +74,7 @@ pub fn exec(mut ui: Box<dyn Widget>) {
 
     while !QUIT.swap(false, Ordering::Relaxed) {
         erase();
-        ui.render(&screen_rect());
+        ui.render(&screen_rect(), true);
         let key = getch();
         ui.handle_event(&Event::KeyStroke(key));
     }

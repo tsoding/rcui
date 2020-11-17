@@ -15,6 +15,10 @@ impl<T: ToString + Clone> ItemList<T> {
         }
     }
 
+    pub fn wrap(items: Vec<T>) -> Box<Self> {
+        Box::new(Self::new(items))
+    }
+
     pub fn up(&mut self) {
         if self.cursor > 0 {
             self.cursor -= 1;
@@ -41,7 +45,7 @@ impl<T: ToString + Clone> ItemList<T> {
 }
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
-    fn render(&mut self, rect: &Rect) {
+    fn render(&mut self, rect: &Rect, active: bool) {
         let h = rect.h.floor() as usize;
         if h > 0 {
             self.sync_scroll(h);
@@ -55,7 +59,11 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
 
                     let selected = i + self.scroll == self.cursor;
                     let color_pair = if selected {
-                        style::CURSOR_PAIR
+                        if active {
+                            style::CURSOR_PAIR
+                        } else {
+                            style::INACTIVE_CURSOR_PAIR
+                        }
                     } else {
                         style::REGULAR_PAIR
                     };
@@ -66,7 +74,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
                         y: rect.y + i as f32,
                         w: rect.w,
                         h: 1.0,
-                    });
+                    }, active);
                     attroff(COLOR_PAIR(color_pair));
                 }
             }
