@@ -69,6 +69,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
                     };
 
                     attron(COLOR_PAIR(color_pair));
+                    // TODO(#17): ItemList should extend cursor to the whole available width
                     text.render(&Rect {
                         x: rect.x,
                         y: rect.y + i as f32,
