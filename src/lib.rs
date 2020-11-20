@@ -8,8 +8,14 @@ mod column;
 mod group;
 mod dummy;
 
+#[cfg(unix)]
 use ncurses::CURSOR_VISIBILITY::*;
+#[cfg(unix)]
 use ncurses::*;
+#[cfg(windows)]
+use pdcurses::CURSOR_VISIBILITY::*;
+#[cfg(windows)]
+use pdcurses::*;
 use std::panic::{set_hook, take_hook};
 use std::collections::VecDeque;
 
