@@ -1,33 +1,66 @@
 use super::*;
 
+pub enum Cell {
+    One(Box<dyn Widget>),
+    Many(usize, Box<dyn Widget>),
+}
+
+impl Cell {
+    #[allow(clippy::borrowed_box)]
+    pub fn get_widget(&self) -> &Box<dyn Widget> {
+        match self {
+            Self::One(widget) => widget,
+            Self::Many(_, widget) => widget,
+        }
+    }
+
+    pub fn get_widget_mut(&mut self) -> &mut Box<dyn Widget> {
+        match self {
+            Self::One(widget) => widget,
+            Self::Many(_, widget) => widget,
+        }
+    }
+
+    pub fn size(&self) -> usize {
+        match self {
+            Self::One(_) => 1,
+            Self::Many(n, _) => *n,
+        }
+    }
+}
+
 pub struct Group {
-    pub widgets: Vec<Box<dyn Widget>>,
+    pub cells: Vec<Cell>,
     pub focus: usize,
 }
 
 impl Group {
-    pub fn new(widgets: Vec<Box<dyn Widget>>) -> Self {
-        Self { widgets, focus: 0 }
+    pub fn new(cells: Vec<Cell>) -> Self {
+        Self { cells, focus: 0 }
     }
 
-    pub fn wrap(widgets: Vec<Box<dyn Widget>>) -> Box<Self> {
-        Box::new(Self::new(widgets))
+    pub fn wrap(cells: Vec<Cell>) -> Box<Self> {
+        Box::new(Self::new(cells))
     }
 
     pub fn focus_next(&mut self) {
-        if !self.widgets.is_empty() {
-            self.focus = (self.focus + 1) % self.widgets.len()
+        if !self.cells.is_empty() {
+            self.focus = (self.focus + 1) % self.cells.len()
         }
     }
 
     pub fn focus_prev(&mut self) {
-        if !self.widgets.is_empty() {
+        if !self.cells.is_empty() {
             if self.focus == 0 {
-                self.focus = self.widgets.len() - 1;
+                self.focus = self.cells.len() - 1;
             } else {
                 self.focus -= 1;
             }
         }
+    }
+
+    pub fn size(&self, w: f32) -> f32 {
+        w / self.cells.iter().map(|x| x.size()).sum::<usize>() as f32
     }
 }
 
@@ -35,8 +68,8 @@ impl Widget for Group {
     fn render(&mut self, _context: &mut Rcui, _rect: &Rect, _active: bool) {}
 
     fn handle_event(&mut self, context: &mut Rcui, event: &Event) {
-        if let Some(widget) = self.widgets.get_mut(self.focus) {
-            widget.handle_event(context, event);
+        if let Some(cell) = self.cells.get_mut(self.focus) {
+            cell.get_widget_mut().handle_event(context, event);
         }
     }
 }

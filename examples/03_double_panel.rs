@@ -30,8 +30,8 @@ fn main() {
             _ => {}
         },
         Row::new(vec![
-            item_list_controls(left_list),
-            item_list_controls(right_list),
+            Cell::One(item_list_controls(left_list)),
+            Cell::One(item_list_controls(right_list)),
         ]),
     ));
 }
