@@ -23,16 +23,16 @@ fn main() {
             origin.handle_event(rcui, event);
         },
         Column::new(vec![
-            Cell::One(Row::wrap(vec![
+            Cell::Many(Row::wrap(vec![
+                Cell::Many(text_cell("hello"), 1),
                 Cell::One(text_cell("hello")),
                 Cell::One(text_cell("hello")),
-                Cell::One(text_cell("hello")),
-            ])),
-            Cell::One(Row::wrap(vec![
+            ]), 3),
+            Cell::Many(Row::wrap(vec![
                 Cell::One(text_cell("world")),
                 Cell::One(text_cell("world")),
                 Cell::One(text_cell("world")),
-            ])),
+            ]), 2),
             Cell::One(Row::wrap(vec![
                 Cell::One(text_cell("foo")),
                 Cell::One(text_cell("foo")),

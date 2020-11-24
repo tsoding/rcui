@@ -19,6 +19,13 @@ impl Cell {
             Self::Many(widget, _) => widget,
         }
     }
+
+    pub fn size(&self) -> usize {
+        match self {
+            Self::One(_)     => 1,
+            Self::Many(_, n) => *n,
+        }
+    }
 }
 
 pub struct Group {
@@ -49,6 +56,10 @@ impl Group {
                 self.focus -= 1;
             }
         }
+    }
+
+    pub fn size(&self, w: f32) -> f32 {
+        w / self.cells.iter().map(|x| x.size()).sum::<usize>() as f32
     }
 }
 
