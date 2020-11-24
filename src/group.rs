@@ -23,7 +23,7 @@ impl Cell {
 
     pub fn size(&self) -> usize {
         match self {
-            Self::One(_)     => 1,
+            Self::One(_) => 1,
             Self::Many(n, _) => *n,
         }
     }

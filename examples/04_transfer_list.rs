@@ -36,8 +36,7 @@ fn main() {
 
             Event::Message(_) => {
                 assert!(row.group.cells.len() == 2);
-                row.group
-                    .cells[1 - row.group.focus]
+                row.group.cells[1 - row.group.focus]
                     .get_widget_mut()
                     .handle_event(context, event);
             }
