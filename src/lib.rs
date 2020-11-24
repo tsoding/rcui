@@ -95,11 +95,13 @@ impl Rcui {
             let key = getch();
             context.push_event(Event::KeyStroke(key));
             while !context.event_queue.is_empty() {
-                context.event_queue.pop_front().map(|event| match event {
-                    // TODO: maybe we should propagate the Quit event down the ui tree as well?
-                    Event::Quit => quit = true,
-                    _ => ui.handle_event(&mut context, &event),
-                });
+                if let Some(event) = context.event_queue.pop_front() {
+                    match event {
+                        // TODO: maybe we should propagate the Quit event down the ui tree as well?
+                        Event::Quit => quit = true,
+                        _ => ui.handle_event(&mut context, &event),
+                    }
+                };
             }
         }
 
