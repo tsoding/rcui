@@ -2,7 +2,7 @@ use super::*;
 
 pub struct Group {
     pub widgets: Vec<Box<dyn Widget>>,
-    pub focus: usize
+    pub focus: usize,
 }
 
 impl Group {

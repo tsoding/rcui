@@ -1,26 +1,26 @@
+mod column;
+mod dummy;
 mod edit_field;
-mod row;
+mod group;
 mod item_list;
 mod proxy;
+mod row;
 pub mod style;
 mod text;
-mod column;
-mod group;
-mod dummy;
 
 use ncurses::CURSOR_VISIBILITY::*;
 use ncurses::*;
-use std::panic::{set_hook, take_hook};
 use std::collections::VecDeque;
+use std::panic::{set_hook, take_hook};
 
+pub use self::column::*;
+pub use self::dummy::*;
 pub use self::edit_field::*;
-pub use self::row::*;
+pub use self::group::*;
 pub use self::item_list::*;
 pub use self::proxy::*;
+pub use self::row::*;
 pub use self::text::*;
-pub use self::column::*;
-pub use self::group::*;
-pub use self::dummy::*;
 
 pub struct Rect {
     pub x: f32,
@@ -34,7 +34,6 @@ pub enum Event {
     KeyStroke(i32),
     Message(String),
 }
-
 
 pub trait Widget {
     fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool);
@@ -60,7 +59,7 @@ pub struct Rcui {
 impl Rcui {
     fn new() -> Self {
         Self {
-            event_queue: VecDeque::new()
+            event_queue: VecDeque::new(),
         }
     }
 

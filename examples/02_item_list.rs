@@ -8,7 +8,7 @@ fn main() {
                 'j' => list.down(),
                 'k' => list.up(),
                 _ => {}
-            }
+            },
 
             _ => {}
         },
