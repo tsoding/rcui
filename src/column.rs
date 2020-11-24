@@ -5,23 +5,23 @@ pub struct Column {
 }
 
 impl Column {
-    pub fn new(widgets: Vec<Box<dyn Widget>>) -> Self {
+    pub fn new(widgets: Vec<Cell>) -> Self {
         Self {
             group: Group::new(widgets),
         }
     }
 
-    pub fn wrap(widgets: Vec<Box<dyn Widget>>) -> Box<Self> {
+    pub fn wrap(widgets: Vec<Cell>) -> Box<Self> {
         Box::new(Self::new(widgets))
     }
 }
 
 impl Widget for Column {
     fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool) {
-        let n = self.group.widgets.len();
+        let n = self.group.cells.len();
         let widget_h = rect.h / n as f32;
         for i in 0..n {
-            self.group.widgets[i].render(
+            self.group.cells[i].get_widget_mut().render(
                 context,
                 &Rect {
                     x: rect.x,

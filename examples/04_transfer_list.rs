@@ -35,15 +35,18 @@ fn main() {
             },
 
             Event::Message(_) => {
-                assert!(row.group.widgets.len() == 2);
-                row.group.widgets[1 - row.group.focus].handle_event(context, event);
+                assert!(row.group.cells.len() == 2);
+                row.group
+                    .cells[1 - row.group.focus]
+                    .get_widget_mut()
+                    .handle_event(context, event);
             }
 
             _ => {}
         },
         Row::new(vec![
-            item_list_controls(left_list),
-            item_list_controls(right_list),
+            Cell::One(item_list_controls(left_list)),
+            Cell::One(item_list_controls(right_list)),
         ]),
     ));
 }

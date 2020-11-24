@@ -23,18 +23,26 @@ fn main() {
             origin.handle_event(rcui, event);
         },
         Column::new(vec![
-            Row::wrap(vec![
-                text_cell("hello"),
-                text_cell("hello"),
-                text_cell("hello"),
-            ]),
-            Row::wrap(vec![
-                text_cell("world"),
-                text_cell("world"),
-                text_cell("world"),
-            ]),
-            Row::wrap(vec![text_cell("foo"), text_cell("foo"), text_cell("foo")]),
-            Row::wrap(vec![text_cell("bar"), text_cell("bar"), text_cell("bar")]),
+            Cell::One(Row::wrap(vec![
+                Cell::One(text_cell("hello")),
+                Cell::One(text_cell("hello")),
+                Cell::One(text_cell("hello")),
+            ])),
+            Cell::One(Row::wrap(vec![
+                Cell::One(text_cell("world")),
+                Cell::One(text_cell("world")),
+                Cell::One(text_cell("world")),
+            ])),
+            Cell::One(Row::wrap(vec![
+                Cell::One(text_cell("foo")),
+                Cell::One(text_cell("foo")),
+                Cell::One(text_cell("foo"))
+            ])),
+            Cell::One(Row::wrap(vec![
+                Cell::One(text_cell("bar")),
+                Cell::One(text_cell("bar")),
+                Cell::One(text_cell("bar"))
+            ])),
         ]),
     ));
 
