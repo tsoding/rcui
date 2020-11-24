@@ -18,7 +18,7 @@ fn main() {
     let n = 100;
     let left_list = ItemList::new((0..n).map(|x| format!("foo-{}", x)).collect());
     let right_list = ItemList::new((0..n).map(|x| format!("bar-{}", x)).collect());
-    Context::exec(
+    Rcui::exec(
         Proxy::wrap(
             |hbox, context, event| match event {
                 Event::KeyStroke(key) => match *key as u8 as char {

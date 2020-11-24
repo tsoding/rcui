@@ -37,8 +37,8 @@ pub enum Event {
 
 
 pub trait Widget {
-    fn render(&mut self, context: &mut Context, rect: &Rect, active: bool);
-    fn handle_event(&mut self, context: &mut Context, event: &Event);
+    fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool);
+    fn handle_event(&mut self, context: &mut Rcui, event: &Event);
 }
 
 pub fn screen_rect() -> Rect {
@@ -53,11 +53,11 @@ pub fn screen_rect() -> Rect {
     }
 }
 
-pub struct Context {
+pub struct Rcui {
     pub event_queue: VecDeque<Event>,
 }
 
-impl Context {
+impl Rcui {
     fn new() -> Self {
         Self {
             event_queue: VecDeque::new()

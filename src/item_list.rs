@@ -54,7 +54,7 @@ impl<T: ToString + Clone> ItemList<T> {
 }
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
-    fn render(&mut self, context: &mut Context, rect: &Rect, active: bool) {
+    fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool) {
         let h = rect.h.floor() as usize;
         if h > 0 {
             self.sync_scroll(h);
@@ -91,5 +91,5 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
         }
     }
 
-    fn handle_event(&mut self, _context: &mut Context, _event: &Event) {}
+    fn handle_event(&mut self, _context: &mut Rcui, _event: &Event) {}
 }

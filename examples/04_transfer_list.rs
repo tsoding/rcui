@@ -25,7 +25,7 @@ fn main() {
     let left_list = ItemList::new((0..n).map(|x| format!("foo-{}", x)).collect());
     let right_list = ItemList::new(Vec::<String>::new());
 
-    Context::exec(
+    Rcui::exec(
         Proxy::wrap(
             |row, context, event| match event {
                 Event::KeyStroke(key) => match *key as u8 as char {

@@ -1,7 +1,7 @@
 use rcui::*;
 
 fn main() {
-    Context::exec(Proxy::wrap(
+    Rcui::exec(Proxy::wrap(
         |list, context, event| match event {
             Event::KeyStroke(key) => match *key as u8 as char {
                 'q' => context.quit(),

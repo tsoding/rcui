@@ -32,9 +32,9 @@ impl Group {
 }
 
 impl Widget for Group {
-    fn render(&mut self, _context: &mut Context, _rect: &Rect, _active: bool) {}
+    fn render(&mut self, _context: &mut Rcui, _rect: &Rect, _active: bool) {}
 
-    fn handle_event(&mut self, context: &mut Context, event: &Event) {
+    fn handle_event(&mut self, context: &mut Rcui, event: &Event) {
         if let Some(widget) = self.widgets.get_mut(self.focus) {
             widget.handle_event(context, event);
         }
