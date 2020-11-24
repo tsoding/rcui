@@ -34,7 +34,7 @@ impl Widget for Row {
             self.group.cells[i].get_widget_mut().render(
                 context,
                 &Rect {
-                    x: x,
+                    x,
                     y: rect.y,
                     w: widget_w * size as f32,
                     h: rect.h,

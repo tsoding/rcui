@@ -27,7 +27,7 @@ impl Widget for Column {
                 context,
                 &Rect {
                     x: rect.x,
-                    y: y,
+                    y,
                     w: rect.w,
                     h: widget_h * size as f32,
                 },

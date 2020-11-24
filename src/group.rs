@@ -6,6 +6,7 @@ pub enum Cell {
 }
 
 impl Cell {
+    #[allow(clippy::borrowed_box)]
     pub fn get_widget(&self) -> &Box<dyn Widget> {
         match self {
             Self::One(widget) => widget,
