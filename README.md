@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/tsoding/rcui/workflows/CI/badge.svg)](https://github.com/tsoding/rcui/actions)
+
 # rcui
 
 Simple TUI framework in Rust.

@@ -9,7 +9,7 @@ fn item_list_controls(item_list: ItemList<String>) -> Box<Proxy<ItemList<String>
                 '\n' => {
                     let item = list.remove();
                     context.push_event(Event::Message(item));
-                },
+                }
                 _ => {}
             },
             Event::Message(item) => {
@@ -17,7 +17,8 @@ fn item_list_controls(item_list: ItemList<String>) -> Box<Proxy<ItemList<String>
             }
             _ => {}
         },
-        item_list)
+        item_list,
+    )
 }
 
 fn main() {
@@ -25,22 +26,24 @@ fn main() {
     let left_list = ItemList::new((0..n).map(|x| format!("foo-{}", x)).collect());
     let right_list = ItemList::new(Vec::<String>::new());
 
-    Rcui::exec(
-        Proxy::wrap(
-            |row, context, event| match event {
-                Event::KeyStroke(key) => match *key as u8 as char {
-                    'q'  => context.quit(),
-                    '\t' => row.focus_next(),
-                    _    => row.handle_event(context, event),
-                }
-
-                Event::Message(_) => {
-                    assert!(row.group.widgets.len() == 2);
-                    row.group.widgets[1 - row.group.focus].handle_event(context, event);
-                }
-
-                _ => {}
+    Rcui::exec(Proxy::wrap(
+        |row, context, event| match event {
+            Event::KeyStroke(key) => match *key as u8 as char {
+                'q' => context.quit(),
+                '\t' => row.focus_next(),
+                _ => row.handle_event(context, event),
             },
-            Row::new(vec![item_list_controls(left_list),
-                          item_list_controls(right_list)])));
+
+            Event::Message(_) => {
+                assert!(row.group.widgets.len() == 2);
+                row.group.widgets[1 - row.group.focus].handle_event(context, event);
+            }
+
+            _ => {}
+        },
+        Row::new(vec![
+            item_list_controls(left_list),
+            item_list_controls(right_list),
+        ]),
+    ));
 }
