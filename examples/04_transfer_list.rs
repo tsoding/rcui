@@ -1,7 +1,7 @@
 use rcui::*;
 
 struct AddItem {
-    label: String
+    label: String,
 }
 
 fn item_list_controls(item_list: ItemList<String>) -> Box<Proxy<ItemList<String>>> {
