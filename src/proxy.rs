@@ -2,25 +2,25 @@ use super::*;
 
 pub struct Proxy<T> {
     pub origin: T,
-    pub handler: fn(&mut T, &Event),
+    pub handler: fn(&mut T, &mut Context, &Event),
 }
 
 impl<T: Widget> Proxy<T> {
-    pub fn new(handler: fn(&mut T, &Event), origin: T) -> Self {
+    pub fn new(handler: fn(&mut T, &mut Context, &Event), origin: T) -> Self {
         Self { origin, handler }
     }
 
-    pub fn wrap(handler: fn(&mut T, &Event), origin: T) -> Box<Self> {
+    pub fn wrap(handler: fn(&mut T, &mut Context, &Event), origin: T) -> Box<Self> {
         Box::new(Self::new(handler, origin))
     }
 }
 
 impl<T: Widget> Widget for Proxy<T> {
-    fn render(&mut self, rect: &Rect, active: bool) {
-        self.origin.render(rect, active);
+    fn render(&mut self, context: &mut Context, rect: &Rect, active: bool) {
+        self.origin.render(context, rect, active);
     }
 
-    fn handle_event(&mut self, event: &Event) {
-        (self.handler)(&mut self.origin, event);
+    fn handle_event(&mut self, context: &mut Context, event: &Event) {
+        (self.handler)(&mut self.origin, context, event);
     }
 }

@@ -54,7 +54,7 @@ impl<T: ToString + Clone> ItemList<T> {
 }
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
-    fn render(&mut self, rect: &Rect, active: bool) {
+    fn render(&mut self, context: &mut Context, rect: &Rect, active: bool) {
         let h = rect.h.floor() as usize;
         if h > 0 {
             self.sync_scroll(h);
@@ -79,7 +79,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
 
                     attron(COLOR_PAIR(color_pair));
                     // TODO(#17): ItemList should extend cursor to the whole available width
-                    text.render(&Rect {
+                    text.render(context, &Rect {
                         x: rect.x,
                         y: rect.y + i as f32,
                         w: rect.w,
@@ -91,5 +91,5 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
         }
     }
 
-    fn handle_event(&mut self, _event: &Event) {}
+    fn handle_event(&mut self, _context: &mut Context, _event: &Event) {}
 }

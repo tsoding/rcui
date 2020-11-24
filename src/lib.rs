@@ -37,8 +37,8 @@ pub enum Event {
 
 
 pub trait Widget {
-    fn render(&mut self, rect: &Rect, active: bool);
-    fn handle_event(&mut self, event: &Event);
+    fn render(&mut self, context: &mut Context, rect: &Rect, active: bool);
+    fn handle_event(&mut self, context: &mut Context, event: &Event);
 }
 
 pub fn screen_rect() -> Rect {
@@ -53,56 +53,58 @@ pub fn screen_rect() -> Rect {
     }
 }
 
-static mut EVENT_QUEUE: Option<VecDeque<Event>> = None;
-
-pub fn push_event(event: Event) {
-    // TODO(#20): get rid of unsafe-s in EVENT_QUEUE handling
-    unsafe {
-        EVENT_QUEUE.as_mut().unwrap().push_back(event);
-    }
+pub struct Context {
+    pub event_queue: VecDeque<Event>,
 }
 
-pub fn quit() {
-    push_event(Event::Quit);
-}
-
-pub fn exec(mut ui: Box<dyn Widget>) {
-    unsafe {
-        EVENT_QUEUE = Some(VecDeque::new());
-    }
-
-    initscr();
-
-    start_color();
-    init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
-    init_pair(style::CURSOR_PAIR, COLOR_BLACK, COLOR_WHITE);
-    init_pair(style::INACTIVE_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
-
-    curs_set(CURSOR_INVISIBLE);
-
-    set_hook(Box::new({
-        let default_hook = take_hook();
-        move |payload| {
-            endwin();
-            default_hook(payload);
-        }
-    }));
-
-    let queue = unsafe { EVENT_QUEUE.as_mut().unwrap() };
-    let mut quit = false;
-    while !quit {
-        erase();
-        ui.render(&screen_rect(), true);
-        let key = getch();
-        queue.push_back(Event::KeyStroke(key));
-        while !queue.is_empty() {
-            queue.pop_front().map(|event| match event {
-                Event::Quit => quit = true,
-                _ => ui.handle_event(&event),
-            });
+impl Context {
+    pub fn new() -> Self {
+        Self {
+            event_queue: VecDeque::new()
         }
     }
 
-    endwin();
-}
+    pub fn push_event(&mut self, event: Event) {
+        self.event_queue.push_back(event);
+    }
 
+    pub fn exec(&mut self, mut ui: Box<dyn Widget>) {
+        initscr();
+
+        start_color();
+        init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
+        init_pair(style::CURSOR_PAIR, COLOR_BLACK, COLOR_WHITE);
+        init_pair(style::INACTIVE_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
+
+        curs_set(CURSOR_INVISIBLE);
+
+        set_hook(Box::new({
+            let default_hook = take_hook();
+            move |payload| {
+                endwin();
+                default_hook(payload);
+            }
+        }));
+
+        let mut quit = false;
+        while !quit {
+            erase();
+            ui.render(self, &screen_rect(), true);
+            let key = getch();
+            self.event_queue.push_back(Event::KeyStroke(key));
+            while !self.event_queue.is_empty() {
+                self.event_queue.pop_front().map(|event| match event {
+                    // TODO: maybe we should propagate the Quit event down the ui tree as well?
+                    Event::Quit => quit = true,
+                    _ => ui.handle_event(self, &event),
+                });
+            }
+        }
+
+        endwin();
+    }
+
+    pub fn quit(&mut self) {
+        self.push_event(Event::Quit);
+    }
+}

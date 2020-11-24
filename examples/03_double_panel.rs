@@ -2,7 +2,7 @@ use rcui::*;
 
 fn item_list_controls<T: ToString + Clone>(item_list: ItemList<T>) -> Box<Proxy<ItemList<T>>> {
     Proxy::wrap(
-        |list, event| match event {
+        |list, _, event| match event {
             Event::KeyStroke(key) => match *key as u8 as char {
                 'j' => list.down(),
                 'k' => list.up(),
@@ -18,13 +18,13 @@ fn main() {
     let n = 100;
     let left_list = ItemList::new((0..n).map(|x| format!("foo-{}", x)).collect());
     let right_list = ItemList::new((0..n).map(|x| format!("bar-{}", x)).collect());
-    rcui::exec(
+    Context::new().exec(
         Proxy::wrap(
-            |hbox, event| match event {
+            |hbox, context, event| match event {
                 Event::KeyStroke(key) => match *key as u8 as char {
-                    'q' => rcui::quit(),
+                    'q' => context.quit(),
                     '\t' => hbox.focus_next(),
-                    _ => hbox.handle_event(event),
+                    _ => hbox.handle_event(context, event),
                 }
 
                 _ => {}
