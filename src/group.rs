@@ -2,28 +2,28 @@ use super::*;
 
 pub enum Cell {
     One(Box<dyn Widget>),
-    Many(Box<dyn Widget>, usize),
+    Many(usize, Box<dyn Widget>),
 }
 
 impl Cell {
     pub fn get_widget(&self) -> &Box<dyn Widget> {
         match self {
             Self::One(widget) => widget,
-            Self::Many(widget, _) => widget,
+            Self::Many(_, widget) => widget,
         }
     }
 
     pub fn get_widget_mut(&mut self) -> &mut Box<dyn Widget> {
         match self {
             Self::One(widget) => widget,
-            Self::Many(widget, _) => widget,
+            Self::Many(_, widget) => widget,
         }
     }
 
     pub fn size(&self) -> usize {
         match self {
             Self::One(_)     => 1,
-            Self::Many(_, n) => *n,
+            Self::Many(n, _) => *n,
         }
     }
 }
