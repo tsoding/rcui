@@ -73,8 +73,19 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
 
                     attron(COLOR_PAIR(color_pair));
                     // TODO(#17): ItemList should extend cursor to the whole available width
-                    mv((rect.y + i as f32).floor() as i32, rect.x.floor() as i32);
-                    addstr(&self.items[i + self.scroll].to_string());
+                    let x = rect.x.floor() as i32;
+                    let y = (rect.y + i as f32).floor() as i32;
+                    let w = rect.w.floor() as usize;
+                    mv(y, x);
+                    let text = self.items[i + self.scroll].to_string();
+                    if text.len() >= w {
+                        addstr(text.get(..w).unwrap_or(&text));
+                    } else {
+                        addstr(&text);
+                        for _ in 0..w - text.len() {
+                            addstr(" ");
+                        }
+                    }
                     attroff(COLOR_PAIR(color_pair));
                 }
             }
