@@ -58,7 +58,7 @@ pub struct Context {
 }
 
 impl Context {
-    pub fn new() -> Self {
+    fn new() -> Self {
         Self {
             event_queue: VecDeque::new()
         }
@@ -68,7 +68,9 @@ impl Context {
         self.event_queue.push_back(event);
     }
 
-    pub fn exec(&mut self, mut ui: Box<dyn Widget>) {
+    pub fn exec(mut ui: Box<dyn Widget>) {
+        let mut context = Self::new();
+
         initscr();
 
         start_color();
@@ -89,14 +91,14 @@ impl Context {
         let mut quit = false;
         while !quit {
             erase();
-            ui.render(self, &screen_rect(), true);
+            ui.render(&mut context, &screen_rect(), true);
             let key = getch();
-            self.event_queue.push_back(Event::KeyStroke(key));
-            while !self.event_queue.is_empty() {
-                self.event_queue.pop_front().map(|event| match event {
+            context.push_event(Event::KeyStroke(key));
+            while !context.event_queue.is_empty() {
+                context.event_queue.pop_front().map(|event| match event {
                     // TODO: maybe we should propagate the Quit event down the ui tree as well?
                     Event::Quit => quit = true,
-                    _ => ui.handle_event(self, &event),
+                    _ => ui.handle_event(&mut context, &event),
                 });
             }
         }

@@ -9,7 +9,7 @@ fn text_cell(s: &str) -> Box<Text> {
 }
 
 fn main() {
-    Context::new().exec(Proxy::wrap(
+    Context::exec(Proxy::wrap(
         |origin, context, event| {
             match event {
                 Event::KeyStroke(key) => {
