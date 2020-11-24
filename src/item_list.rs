@@ -54,18 +54,12 @@ impl<T: ToString + Clone> ItemList<T> {
 }
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
-    fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool) {
+    fn render(&mut self, _context: &mut Rcui, rect: &Rect, active: bool) {
         let h = rect.h.floor() as usize;
         if h > 0 {
             self.sync_scroll(h);
             for i in 0..h {
                 if self.scroll + i < self.items.len() {
-                    let mut text = Text {
-                        text: self.items[i + self.scroll].to_string(),
-                        halign: HAlign::Left,
-                        valign: VAlign::Top,
-                    };
-
                     let selected = i + self.scroll == self.cursor;
                     let color_pair = if selected {
                         if active {
@@ -79,12 +73,19 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
 
                     attron(COLOR_PAIR(color_pair));
                     // TODO(#17): ItemList should extend cursor to the whole available width
-                    text.render(context, &Rect {
-                        x: rect.x,
-                        y: rect.y + i as f32,
-                        w: rect.w,
-                        h: 1.0,
-                    }, active);
+                    let x = rect.x.floor() as i32;
+                    let y = (rect.y + i as f32).floor() as i32;
+                    let w = rect.w.floor() as usize;
+                    mv(y, x);
+                    let text = self.items[i + self.scroll].to_string();
+                    if text.len() >= w {
+                        addstr(text.get(..w).unwrap_or(&text));
+                    } else {
+                        addstr(&text);
+                        for _ in 0..w - text.len() {
+                            addstr(" ");
+                        }
+                    }
                     attroff(COLOR_PAIR(color_pair));
                 }
             }
