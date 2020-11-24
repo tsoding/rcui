@@ -9,18 +9,18 @@ fn text_cell(s: &str) -> Box<Text> {
 }
 
 fn main() {
-    rcui::exec(Proxy::wrap(
-        |origin, event| {
+    Rcui::exec(Proxy::wrap(
+        |origin, rcui, event| {
             match event {
                 Event::KeyStroke(key) => {
                     if *key as u8 as char == 'q' {
-                        rcui::quit();
+                        rcui.quit();
                     }
                 }
 
                 _ => {}
             }
-            origin.handle_event(event);
+            origin.handle_event(rcui, event);
         },
         Column::new(vec![
             Row::wrap(vec![

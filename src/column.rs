@@ -15,11 +15,11 @@ impl Column {
 }
 
 impl Widget for Column {
-    fn render(&mut self, rect: &Rect, active: bool) {
+    fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool) {
         let n = self.group.widgets.len();
         let widget_h = rect.h / n as f32;
         for i in 0..n {
-            self.group.widgets[i].render(&Rect {
+            self.group.widgets[i].render(context, &Rect {
                 x: rect.x,
                 y: rect.y + widget_h * i as f32,
                 w: rect.w,
@@ -28,7 +28,7 @@ impl Widget for Column {
         }
     }
 
-    fn handle_event(&mut self, event: &Event) {
-        self.group.handle_event(event);
+    fn handle_event(&mut self, context: &mut Rcui, event: &Event) {
+        self.group.handle_event(context, event);
     }
 }
