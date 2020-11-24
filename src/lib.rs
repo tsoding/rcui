@@ -21,6 +21,7 @@ pub use self::item_list::*;
 pub use self::proxy::*;
 pub use self::row::*;
 pub use self::text::*;
+pub use std::any::Any;
 
 pub struct Rect {
     pub x: f32,
@@ -32,7 +33,7 @@ pub struct Rect {
 pub enum Event {
     Quit,
     KeyStroke(i32),
-    Message(String),
+    Custom(Box<dyn Any>),
 }
 
 pub trait Widget {
