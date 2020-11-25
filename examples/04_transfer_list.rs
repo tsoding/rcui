@@ -11,8 +11,9 @@ fn item_list_controls(item_list: ItemList<String>) -> Box<Proxy<ItemList<String>
                 'j' => list.down(),
                 'k' => list.up(),
                 '\n' => {
-                    let item = list.remove();
-                    context.push_event(Event::Custom(Box::new(AddItem { label: item })));
+                    if let Some(item) = list.remove() {
+                        context.push_event(Event::Custom(Box::new(AddItem { label: item })));
+                    }
                 }
                 _ => {}
             },

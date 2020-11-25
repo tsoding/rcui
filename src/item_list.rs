@@ -44,8 +44,18 @@ impl<T: ToString + Clone> ItemList<T> {
         self.items.push(item)
     }
 
-    pub fn remove(&mut self) -> T {
-        self.items.remove(self.cursor)
+    pub fn remove(&mut self) -> Option<T> {
+        if !self.items.is_empty() {
+            let item = self.items.remove(self.cursor);
+
+            if !self.items.is_empty() && self.cursor >= self.items.len() {
+                self.cursor = self.items.len() - 1;
+            }
+
+            Some(item)
+        } else {
+            None
+        }
     }
 
     // TODO(#8): Operations to insert new items into the ItemList
