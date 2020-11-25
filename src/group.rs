@@ -59,8 +59,8 @@ impl Group {
         }
     }
 
-    pub fn size(&self, w: f32) -> f32 {
-        w / self.cells.iter().map(|x| x.count()).sum::<usize>() as f32
+    pub fn cell_size(&self, size: f32) -> f32 {
+        size / self.cells.iter().map(|x| x.count()).sum::<usize>() as f32
     }
 }
 

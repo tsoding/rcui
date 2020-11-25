@@ -19,7 +19,7 @@ impl Column {
 impl Widget for Column {
     fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool) {
         let n = self.group.cells.len();
-        let widget_h = self.group.size(rect.h);
+        let widget_h = self.group.cell_size(rect.h);
         let mut y = rect.y;
         for i in 0..n {
             let cell_count = self.group.cells[i].count();
