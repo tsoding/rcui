@@ -48,7 +48,7 @@ impl<T: ToString + Clone> ItemList<T> {
         if !self.items.is_empty() {
             let item = self.items.remove(self.cursor);
 
-            if self.items.len() > 0 && self.cursor >= self.items.len() {
+            if !self.items.is_empty() && self.cursor >= self.items.len() {
                 self.cursor = self.items.len() - 1;
             }
 
