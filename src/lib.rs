@@ -37,8 +37,8 @@ pub enum Event {
 }
 
 pub trait Widget {
-    fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool);
-    fn handle_event(&mut self, context: &mut Rcui, event: &Event);
+    fn render(&mut self, _context: &mut Rcui, _rect: &Rect, _active: bool) {}
+    fn handle_event(&mut self, _context: &mut Rcui, _event: &Event) {}
 }
 
 pub fn screen_rect() -> Rect {

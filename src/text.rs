@@ -60,6 +60,4 @@ impl Widget for Text {
         mv(y, x);
         addstr(s);
     }
-
-    fn handle_event(&mut self, _context: &mut Rcui, _event: &Event) {}
 }

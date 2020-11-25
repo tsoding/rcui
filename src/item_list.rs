@@ -91,6 +91,4 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
             }
         }
     }
-
-    fn handle_event(&mut self, _context: &mut Rcui, _event: &Event) {}
 }

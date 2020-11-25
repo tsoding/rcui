@@ -13,7 +13,4 @@ impl Dummy {
     }
 }
 
-impl Widget for Dummy {
-    fn render(&mut self, _context: &mut Rcui, _rect: &Rect, _active: bool) {}
-    fn handle_event(&mut self, _context: &mut Rcui, _event: &Event) {}
-}
+impl Widget for Dummy {}
