@@ -27,10 +27,10 @@ impl Row {
 impl Widget for Row {
     fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool) {
         let n = self.group.cells.len();
-        let widget_w = self.group.size(rect.w);
+        let widget_w = self.group.cell_size(rect.w);
         let mut x = rect.x;
         for i in 0..n {
-            let size = self.group.cells[i].size();
+            let size = self.group.cells[i].count();
             self.group.cells[i].get_widget_mut().render(
                 context,
                 &Rect {

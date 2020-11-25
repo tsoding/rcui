@@ -21,7 +21,7 @@ impl Cell {
         }
     }
 
-    pub fn size(&self) -> usize {
+    pub fn count(&self) -> usize {
         match self {
             Self::One(_) => 1,
             Self::Many(n, _) => *n,
@@ -59,14 +59,12 @@ impl Group {
         }
     }
 
-    pub fn size(&self, w: f32) -> f32 {
-        w / self.cells.iter().map(|x| x.size()).sum::<usize>() as f32
+    pub fn cell_size(&self, size: f32) -> f32 {
+        size / self.cells.iter().map(|x| x.count()).sum::<usize>() as f32
     }
 }
 
 impl Widget for Group {
-    fn render(&mut self, _context: &mut Rcui, _rect: &Rect, _active: bool) {}
-
     fn handle_event(&mut self, context: &mut Rcui, event: &Event) {
         if let Some(cell) = self.cells.get_mut(self.focus) {
             cell.get_widget_mut().handle_event(context, event);

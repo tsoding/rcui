@@ -37,8 +37,8 @@ pub enum Event {
 }
 
 pub trait Widget {
-    fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool);
-    fn handle_event(&mut self, context: &mut Rcui, event: &Event);
+    fn render(&mut self, _context: &mut Rcui, _rect: &Rect, _active: bool) {}
+    fn handle_event(&mut self, _context: &mut Rcui, _event: &Event) {}
 }
 
 pub fn screen_rect() -> Rect {
@@ -96,11 +96,11 @@ impl Rcui {
             context.push_event(Event::KeyStroke(key));
             while !context.event_queue.is_empty() {
                 if let Some(event) = context.event_queue.pop_front() {
-                    match event {
-                        // TODO: maybe we should propagate the Quit event down the ui tree as well?
-                        Event::Quit => quit = true,
-                        _ => ui.handle_event(&mut context, &event),
+                    if let Event::Quit = event {
+                        quit = true;
                     }
+
+                    ui.handle_event(&mut context, &event);
                 };
             }
         }
