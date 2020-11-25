@@ -22,18 +22,18 @@ impl Widget for Column {
         let widget_h = self.group.size(rect.h);
         let mut y = rect.y;
         for i in 0..n {
-            let size = self.group.cells[i].size();
+            let cell_count = self.group.cells[i].count();
             self.group.cells[i].get_widget_mut().render(
                 context,
                 &Rect {
                     x: rect.x,
                     y,
                     w: rect.w,
-                    h: widget_h * size as f32,
+                    h: widget_h * cell_count as f32,
                 },
                 active && i == self.group.focus,
             );
-            y += widget_h * size as f32;
+            y += widget_h * cell_count as f32;
         }
     }
 

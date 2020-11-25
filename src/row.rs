@@ -30,7 +30,7 @@ impl Widget for Row {
         let widget_w = self.group.size(rect.w);
         let mut x = rect.x;
         for i in 0..n {
-            let size = self.group.cells[i].size();
+            let size = self.group.cells[i].count();
             self.group.cells[i].get_widget_mut().render(
                 context,
                 &Rect {

@@ -21,7 +21,7 @@ impl Cell {
         }
     }
 
-    pub fn size(&self) -> usize {
+    pub fn count(&self) -> usize {
         match self {
             Self::One(_) => 1,
             Self::Many(n, _) => *n,
@@ -60,7 +60,7 @@ impl Group {
     }
 
     pub fn size(&self, w: f32) -> f32 {
-        w / self.cells.iter().map(|x| x.size()).sum::<usize>() as f32
+        w / self.cells.iter().map(|x| x.count()).sum::<usize>() as f32
     }
 }
 
