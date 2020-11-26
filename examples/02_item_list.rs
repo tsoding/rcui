@@ -1,14 +1,14 @@
 use rcui::*;
 
 fn main() {
-    rcui::exec(Proxy::wrap(
-        |list, event| match event {
+    Rcui::exec(Proxy::wrap(
+        |list, context, event| match event {
             Event::KeyStroke(key) => match *key as u8 as char {
-                'q' => rcui::quit(),
+                'q' => context.quit(),
                 'j' => list.down(),
                 'k' => list.up(),
                 _ => {}
-            }
+            },
 
             _ => {}
         },

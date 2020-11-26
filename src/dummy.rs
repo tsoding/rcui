@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Default)]
 pub struct Dummy;
 
 impl Dummy {
@@ -12,7 +13,4 @@ impl Dummy {
     }
 }
 
-impl Widget for Dummy {
-    fn render(&mut self, _rect: &Rect, _active: bool) {}
-    fn handle_event(&mut self, _event: &Event) {}
-}
+impl Widget for Dummy {}
