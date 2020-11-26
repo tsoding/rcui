@@ -2,9 +2,9 @@
 # It is not intended for manual editing.
 [[package]]
 name = "cc"
-version = "1.0.61"
+version = "1.0.65"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed67cbde08356238e75fc4656be4749481eeffb09e19f320a25237d5221c985d"
+checksum = "95752358c8f7552394baf48cd82695b345628ad3f170d607de3ca03b8dacca15"
 
 [[package]]
 name = "libc"
@@ -24,6 +24,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "pdcurses"
+version = "0.0.0"
+source = "git+https://github.com/et342/pdcurses-rs#83da8fdc26b1feab8cb571ce17ae1cde2e6c8108"
+dependencies = [
+ "cc",
+ "libc",
+]
+
+[[package]]
 name = "pkg-config"
 version = "0.3.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -34,4 +43,5 @@ name = "rcui"
 version = "0.1.0"
 dependencies = [
  "ncurses",
+ "pdcurses",
 ]

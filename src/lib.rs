@@ -8,8 +8,14 @@ mod row;
 pub mod style;
 mod text;
 
+#[cfg(unix)]
 use ncurses::CURSOR_VISIBILITY::*;
+#[cfg(unix)]
 use ncurses::*;
+#[cfg(windows)]
+use pdcurses::CURSOR_VISIBILITY::*;
+#[cfg(windows)]
+use pdcurses::*;
 use std::collections::VecDeque;
 use std::panic::{set_hook, take_hook};
 
