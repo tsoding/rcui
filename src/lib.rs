@@ -78,6 +78,7 @@ impl Rcui {
         let mut context = Self::new();
 
         initscr();
+        keypad(stdscr(), true);
 
         start_color();
         init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
@@ -96,6 +97,10 @@ impl Rcui {
 
         let mut quit = false;
         while !quit {
+            #[cfg(windows)]
+            if is_termresized() {
+                resize_term(0, 0);
+            }
             erase();
             ui.render(&mut context, &screen_rect(), true);
             let key = getch();
