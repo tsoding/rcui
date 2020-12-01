@@ -2,35 +2,36 @@ use rcui::*;
 
 fn title(title: &str, widget: Box<dyn Widget>) -> Box<dyn Widget> {
     let mut title = Column::wrap(vec![
-        Cell::Fixed(3.0, Box::new(Text {
-            text: title.to_string(),
-            halign: HAlign::Centre,
-            valign: VAlign::Centre,
-        })),
-        Cell::One(widget)
+        Cell::Fixed(
+            3.0,
+            Box::new(Text {
+                text: title.to_string(),
+                halign: HAlign::Centre,
+                valign: VAlign::Centre,
+            }),
+        ),
+        Cell::One(widget),
     ]);
     title.group.focus = 1;
     title
 }
 
 fn main() {
-    Rcui::exec(
-        title(
-            "jk to move up and down",
-            Proxy::wrap(
-                |list, context, event| match event {
-                    Event::KeyStroke(key) => match *key as u8 as char {
-                        'q' => context.quit(),
-                        'j' => list.down(),
-                        'k' => list.up(),
-                        _ => {}
-                    },
-
+    Rcui::exec(title(
+        "jk to move up and down",
+        Proxy::wrap(
+            |list, context, event| match event {
+                Event::KeyStroke(key) => match *key as u8 as char {
+                    'q' => context.quit(),
+                    'j' => list.down(),
+                    'k' => list.up(),
                     _ => {}
                 },
-                ItemList::new((0..100).map(|x| format!("item-{:02}", x)).collect()),
-            )
-        )
-    );
+
+                _ => {}
+            },
+            ItemList::new((0..100).map(|x| format!("item-{:02}", x)).collect()),
+        ),
+    ));
     println!("Quitting gracefully uwu");
 }
