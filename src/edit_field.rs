@@ -30,7 +30,7 @@ impl Widget for EditField {
     }
 
     fn handle_event(&mut self, _context: &mut Rcui, event: &Event) {
-        // TODO: move the utf8 buffer mechanism to the main event loop
+        // TODO(#37): move the utf8 buffer mechanism to the main event loop
         if let Event::KeyStroke(key) = event {
             self.buffer.push(*key as u8);
             match std::str::from_utf8(&self.buffer) {
