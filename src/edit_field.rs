@@ -20,6 +20,20 @@ impl EditField {
         Box::new(Self::new())
     }
 
+    pub fn left(&mut self) {
+        if self.cursor > 0 {
+            self.cursor -= 1;
+        }
+    }
+
+    pub fn right(&mut self) {
+        if self.cursor < self.text.len() {
+            self.cursor += 1;
+        }
+    }
+
+    // TODO: EditField does not have a way to delete chars
+
     pub fn insert_chars(&mut self, cs: &[char]) {
         if self.cursor >= self.text.len() {
             self.text.extend_from_slice(cs);
