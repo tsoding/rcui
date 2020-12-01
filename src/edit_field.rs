@@ -1,5 +1,3 @@
-// TODO(#10): EditField is not implemented
-
 use super::*;
 
 pub struct EditField {
