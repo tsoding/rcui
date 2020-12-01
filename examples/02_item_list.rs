@@ -20,15 +20,15 @@ fn main() {
     Rcui::exec(title(
         "jk to move up and down",
         Proxy::wrap(
-            |list, context, event| match event {
-                Event::KeyStroke(key) => match *key as u8 as char {
-                    'q' => context.quit(),
-                    'j' => list.down(),
-                    'k' => list.up(),
-                    _ => {}
-                },
-
-                _ => {}
+            |list, context, event| {
+                if let Event::KeyStroke(key) = event {
+                    match *key as u8 as char {
+                        'q' => context.quit(),
+                        'j' => list.down(),
+                        'k' => list.up(),
+                        _ => {}
+                    }
+                }
             },
             ItemList::new((0..100).map(|x| format!("item-{:02}", x)).collect()),
         ),

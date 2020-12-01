@@ -2,14 +2,14 @@ use rcui::*;
 
 fn item_list_controls<T: ToString + Clone>(item_list: ItemList<T>) -> Box<Proxy<ItemList<T>>> {
     Proxy::wrap(
-        |list, _, event| match event {
-            Event::KeyStroke(key) => match *key as u8 as char {
-                'j' => list.down(),
-                'k' => list.up(),
-                _ => {}
-            },
-
-            _ => {}
+        |list, _, event| {
+            if let Event::KeyStroke(key) = event {
+                match *key as u8 as char {
+                    'j' => list.down(),
+                    'k' => list.up(),
+                    _ => {}
+                }
+            }
         },
         item_list,
     )
@@ -38,14 +38,14 @@ fn main() {
     Rcui::exec(title(
         "jk to move up and down, TAB to switch the focus",
         Proxy::wrap(
-            |hbox, context, event| match event {
-                Event::KeyStroke(key) => match *key as u8 as char {
-                    'q' => context.quit(),
-                    '\t' => hbox.focus_next(),
-                    _ => hbox.handle_event(context, event),
-                },
-
-                _ => {}
+            |hbox, context, event| {
+                if let Event::KeyStroke(key) = event {
+                    match *key as u8 as char {
+                        'q' => context.quit(),
+                        '\t' => hbox.focus_next(),
+                        _ => hbox.handle_event(context, event),
+                    }
+                }
             },
             Row::new(vec![
                 Cell::One(item_list_controls(left_list)),
