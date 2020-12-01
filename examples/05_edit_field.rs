@@ -8,10 +8,12 @@ fn main() {
                 match *key {
                     KEY_LEFT => field.left(),
                     KEY_RIGHT => field.right(),
-                    _ => if *key as u8 as char == '\n' {
-                        rcui.quit()
-                    } else {
-                        field.handle_event(rcui, event)
+                    _ => {
+                        if *key as u8 as char == '\n' {
+                            rcui.quit()
+                        } else {
+                            field.handle_event(rcui, event)
+                        }
                     }
                 }
             }
