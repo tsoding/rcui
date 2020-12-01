@@ -3,6 +3,7 @@ use super::*;
 pub enum Cell {
     One(Box<dyn Widget>),
     Many(usize, Box<dyn Widget>),
+    Fixed(f32, Box<dyn Widget>),
 }
 
 impl Cell {
@@ -11,6 +12,7 @@ impl Cell {
         match self {
             Self::One(widget) => widget,
             Self::Many(_, widget) => widget,
+            Self::Fixed(_, widget) => widget,
         }
     }
 
@@ -18,13 +20,15 @@ impl Cell {
         match self {
             Self::One(widget) => widget,
             Self::Many(_, widget) => widget,
+            Self::Fixed(_, widget) => widget,
         }
     }
 
-    pub fn count(&self) -> usize {
+    pub fn size(&self, cell_size: f32) -> f32 {
         match self {
-            Self::One(_) => 1,
-            Self::Many(n, _) => *n,
+            Self::One(_) => cell_size,
+            Self::Many(n, _) => cell_size * *n as f32,
+            Self::Fixed(size, _) => *size,
         }
     }
 }
@@ -59,8 +63,18 @@ impl Group {
         }
     }
 
-    pub fn cell_size(&self, size: f32) -> f32 {
-        size / self.cells.iter().map(|x| x.count()).sum::<usize>() as f32
+    pub fn cell_size(&self, mut size: f32) -> f32 {
+        let mut count = 0;
+
+        for cell in self.cells.iter() {
+            match cell {
+                Cell::One(_) => count += 1,
+                Cell::Many(n, _) => count += n,
+                Cell::Fixed(s, _) => size -= s,
+            }
+        }
+
+        size / count as f32
     }
 }
 

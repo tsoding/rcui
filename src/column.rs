@@ -19,21 +19,21 @@ impl Column {
 impl Widget for Column {
     fn render(&mut self, context: &mut Rcui, rect: &Rect, active: bool) {
         let n = self.group.cells.len();
-        let widget_h = self.group.cell_size(rect.h);
+        let cell_size = self.group.cell_size(rect.h);
         let mut y = rect.y;
         for i in 0..n {
-            let cell_count = self.group.cells[i].count();
+            let widget_size = self.group.cells[i].size(cell_size);
             self.group.cells[i].get_widget_mut().render(
                 context,
                 &Rect {
                     x: rect.x,
                     y,
                     w: rect.w,
-                    h: widget_h * cell_count as f32,
+                    h: widget_size,
                 },
                 active && i == self.group.focus,
             );
-            y += widget_h * cell_count as f32;
+            y += widget_size;
         }
     }
 
