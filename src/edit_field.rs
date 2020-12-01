@@ -25,7 +25,7 @@ impl Widget for EditField {
         let x = rect.x.floor() as i32;
         let y = rect.y.floor() as i32;
         mv(y, x);
-        // TODO: EditField does not wrap during the rendering
+        // TODO(#35): EditField does not wrap during the rendering
         addstr(&self.text);
     }
 
