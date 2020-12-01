@@ -32,7 +32,7 @@ impl EditField {
         }
     }
 
-    // TODO: EditField does not have a way to delete chars
+    // TODO(#39): EditField does not have a way to delete chars
 
     pub fn insert_chars(&mut self, cs: &[char]) {
         if self.cursor >= self.text.len() {
