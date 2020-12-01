@@ -4,7 +4,7 @@ use super::*;
 pub struct EditField {
     text: String,
     buffer: Vec<u8>,
-    // TODO: EditField does not have any cursor functionality
+    // TODO(#34): EditField does not have any cursor functionality
 }
 
 impl EditField {
