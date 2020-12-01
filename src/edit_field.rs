@@ -38,8 +38,10 @@ impl Widget for EditField {
                     self.text.push_str(&s);
                     self.buffer.clear()
                 }
-                Err(_) => if self.buffer.len() >= 4 {
-                    self.buffer.clear()
+                Err(_) => {
+                    if self.buffer.len() >= 4 {
+                        self.buffer.clear()
+                    }
                 }
             }
         }

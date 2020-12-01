@@ -82,7 +82,6 @@ impl Rcui {
         let locale_conf = LcCategory::all;
         setlocale(locale_conf, "en_US.UTF-8");
 
-
         initscr();
         keypad(stdscr(), true);
         timeout(10);
