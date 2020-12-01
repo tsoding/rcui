@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Default)]
 pub struct EditField {
     text: String,
     buffer: Vec<u8>,
