@@ -11,18 +11,15 @@ fn text_cell(s: &str) -> Box<Text> {
 fn main() {
     Rcui::exec(Proxy::wrap(
         |origin, rcui, event| {
-            match event {
-                Event::KeyStroke(key) => {
-                    if *key as u8 as char == 'q' {
-                        rcui.quit();
-                    }
+            if let Event::KeyStroke(key) = event {
+                if *key as u8 as char == 'q' {
+                    rcui.quit();
                 }
-
-                _ => {}
             }
             origin.handle_event(rcui, event);
         },
         Column::new(vec![
+            Cell::Fixed(3.0, text_cell("This is the Grid Example:")),
             Cell::Many(
                 3,
                 Row::wrap(vec![
