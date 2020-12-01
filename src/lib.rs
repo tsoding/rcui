@@ -74,7 +74,7 @@ impl Rcui {
         self.event_queue.push_back(event);
     }
 
-    // TODO: no support for nested event loops via Rcui::exec()
+    // TODO(#36): no support for nested event loops via Rcui::exec()
 
     pub fn exec(mut ui: Box<dyn Widget>) {
         let mut context = Self::new();
