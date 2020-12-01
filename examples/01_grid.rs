@@ -23,6 +23,7 @@ fn main() {
             origin.handle_event(rcui, event);
         },
         Column::new(vec![
+            Cell::Fixed(3.0, text_cell("This is the Grid Example:")),
             Cell::Many(
                 3,
                 Row::wrap(vec![
