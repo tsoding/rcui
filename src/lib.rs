@@ -74,11 +74,18 @@ impl Rcui {
         self.event_queue.push_back(event);
     }
 
+    // TODO: no support for nested event loops via Rcui::exec()
+
     pub fn exec(mut ui: Box<dyn Widget>) {
         let mut context = Self::new();
 
+        let locale_conf = LcCategory::all;
+        setlocale(locale_conf, "en_US.UTF-8");
+
+
         initscr();
         keypad(stdscr(), true);
+        timeout(10);
 
         start_color();
         init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
@@ -103,8 +110,20 @@ impl Rcui {
             }
             erase();
             ui.render(&mut context, &screen_rect(), true);
-            let key = getch();
-            context.push_event(Event::KeyStroke(key));
+
+            // Busy waiting on the key event
+            let mut key = getch();
+            while key == ERR {
+                key = getch();
+            }
+
+            // Flushing everything we've got
+            while key != ERR {
+                context.push_event(Event::KeyStroke(key));
+                key = getch();
+            }
+
+            // Handling all of the events from the queue
             while !context.event_queue.is_empty() {
                 if let Some(event) = context.event_queue.pop_front() {
                     if let Event::Quit = event {
