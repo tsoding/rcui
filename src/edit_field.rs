@@ -3,7 +3,7 @@ use super::*;
 pub struct EditField {
     text: String,
     buffer: Vec<u8>,
-    cursor: usize,
+    // TODO: EditField does not have any cursor functionality
 }
 
 impl EditField {
@@ -11,7 +11,6 @@ impl EditField {
         Self {
             text: String::new(),
             buffer: Vec::new(),
-            cursor: 0
         }
     }
 
@@ -25,6 +24,7 @@ impl Widget for EditField {
         let x = rect.x.floor() as i32;
         let y = rect.y.floor() as i32;
         mv(y, x);
+        // TODO: EditField does not wrap during the rendering
         addstr(&self.text);
     }
 
