@@ -79,8 +79,9 @@ impl Rcui {
     pub fn exec(mut ui: Box<dyn Widget>) {
         let mut context = Self::new();
 
-        let locale_conf = LcCategory::all;
-        setlocale(locale_conf, "en_US.UTF-8");
+        unsafe {
+            libc::setlocale(libc::LC_ALL, "en_US.UTF-8\0".as_ptr().cast());
+        }
 
         initscr();
         keypad(stdscr(), true);
