@@ -1,4 +1,4 @@
-use ncurses::*;
+use rcui::curses::*;
 use rcui::*;
 
 fn main() {
