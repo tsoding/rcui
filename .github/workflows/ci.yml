@@ -2,27 +2,57 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build_and_test:
-    name: Rust project
+  build_and_test_unix:
+    name: Rust project (Unix)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: checkout
+        uses: actions/checkout@v2
       - name: install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -qq libncurses-dev libncursesw5-dev
-      - uses: actions-rs/cargo@v1
+      - name: cargo build
+        uses: actions-rs/cargo@v1
         with:
           command: build
           args: --release --all-features
-      - uses: actions-rs/cargo@v1
+      - name: cargo test
+        uses: actions-rs/cargo@v1
         with:
           command: test
-      - uses: actions-rs/cargo@v1
+      - name: cargo clippy
+        uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: --all-targets
-      - uses: actions-rs/cargo@v1
+      - name: cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check
+  build_and_test_windows:
+    name: Rust project (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: cargo build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --all-features
+      - name: cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+      - name: cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-targets
+      - name: cargo fmt
+        uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: -- --check
