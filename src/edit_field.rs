@@ -7,6 +7,11 @@ pub struct EditField {
     cursor: usize,
 }
 
+// TODO(#45): EditField does not support selections
+// TODO(#46): EditField does not support multiple lines (newlines)
+// TODO(#47): EditField does not have a way to jump one word forward/backward
+// TODO(#48): Some sort of clipboard support for EditField
+
 impl EditField {
     pub fn new() -> Self {
         Self {
@@ -32,7 +37,18 @@ impl EditField {
         }
     }
 
-    // TODO(#39): EditField does not have a way to delete chars
+    pub fn delete_back(&mut self) {
+        if self.cursor > 0 {
+            self.cursor -= 1;
+            self.text.remove(self.cursor);
+        }
+    }
+
+    pub fn delete_front(&mut self) {
+        if self.cursor < self.text.len() {
+            self.text.remove(self.cursor);
+        }
+    }
 
     pub fn insert_chars(&mut self, cs: &[char]) {
         if self.cursor >= self.text.len() {

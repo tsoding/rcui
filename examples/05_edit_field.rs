@@ -8,6 +8,8 @@ fn main() {
                 match *key {
                     KEY_LEFT => field.left(),
                     KEY_RIGHT => field.right(),
+                    KEY_DC => field.delete_front(),
+                    KEY_BACKSPACE => field.delete_back(),
                     _ => {
                         if *key as u8 as char == '\n' {
                             rcui.quit()
