@@ -159,7 +159,7 @@ impl Widget for EditField {
         // TODO(#35): EditField does not wrap during the rendering
         addstr(&self.text.iter().collect::<String>());
         if active {
-            // TODO: Differentiate the cursor during selection
+            // TODO(#51): Differentiate the cursor during selection
             //  there is no difference from the normal cursor when you are selecting only one character
             //  but the behavior is different (insertion will delete the highlighted character)
             match self.selection() {
