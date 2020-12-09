@@ -35,7 +35,19 @@ impl EditField {
         Box::new(Self::new())
     }
 
-    fn selection(&mut self) -> Option<Range<usize>> {
+    pub fn put_selection_to_clipboard(&self, rcui: &mut Rcui) {
+        if let Some(selection) = self.selection() {
+            if let Some(text) = self.text.get(selection) {
+                rcui.put_to_clipboard(text)
+            }
+        }
+    }
+
+    pub fn paste_from_clipboard(&mut self, rcui: &Rcui) {
+        self.insert_chars(rcui.get_clipboard())
+    }
+
+    fn selection(&self) -> Option<Range<usize>> {
         let selection_border =
             (self.cursor.position as i32 + self.cursor.selection_offset) as usize;
 
