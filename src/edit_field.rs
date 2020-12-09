@@ -15,6 +15,8 @@ pub struct EditField {
     cursor: Cursor,
 }
 
+// TODO(#46): EditField does not support multiple lines (newlines)
+// TODO(#47): EditField does not have a way to jump one word forward/backward
 // TODO(#48): Some sort of clipboard support for EditField
 
 impl EditField {
