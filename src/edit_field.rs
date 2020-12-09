@@ -1,6 +1,6 @@
 use super::*;
+use std::cmp::{max, min, Ordering};
 use std::ops::Range;
-use std::cmp::{min, max, Ordering};
 
 #[derive(Default)]
 struct Cursor {
@@ -22,9 +22,9 @@ impl EditField {
         Self {
             text: Vec::new(),
             buffer: Vec::new(),
-            cursor: Cursor{
+            cursor: Cursor {
                 position: 0,
-                selection_offset: 0
+                selection_offset: 0,
             },
         }
     }
@@ -34,7 +34,8 @@ impl EditField {
     }
 
     fn selection(&mut self) -> Option<Range<usize>> {
-        let selection_border = (self.cursor.position as i32 + self.cursor.selection_offset) as usize;
+        let selection_border =
+            (self.cursor.position as i32 + self.cursor.selection_offset) as usize;
 
         match self.cursor.selection_offset.cmp(&0) {
             Ordering::Less => {
@@ -85,7 +86,6 @@ impl EditField {
                 self.delete_selection(selection);
             }
         }
-
     }
 
     pub fn delete_front(&mut self) {
@@ -99,16 +99,12 @@ impl EditField {
                 self.delete_selection(selection);
             }
         }
-
     }
 
     pub fn insert_chars(&mut self, cs: &[char]) {
         match self.selection() {
-            None => {
-            }
-            Some(selection) => {
-                self.delete_selection(selection)
-            }
+            None => {}
+            Some(selection) => self.delete_selection(selection),
         }
 
         if self.cursor.position >= self.text.len() {
@@ -138,7 +134,6 @@ impl EditField {
 
 // TODO(#46): EditField does not support multiple lines (newlines)
 // TODO(#47): EditField does not have a way to jump one word forward/backward
-
 
 impl Widget for EditField {
     fn render(&mut self, _context: &mut Rcui, rect: &Rect, active: bool) {
@@ -178,7 +173,6 @@ impl Widget for EditField {
             }
         }
     }
-
 
     fn handle_event(&mut self, _context: &mut Rcui, event: &Event) {
         // TODO(#37): move the utf8 buffer mechanism to the main event loop
