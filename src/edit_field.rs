@@ -1,15 +1,20 @@
 use super::*;
+use std::ops::Range;
+use std::cmp::{min, max, Ordering};
+
+#[derive(Default)]
+struct Cursor {
+    position: usize,
+    selection_offset: i32,
+}
 
 #[derive(Default)]
 pub struct EditField {
     text: Vec<char>,
     buffer: Vec<u8>,
-    cursor: usize,
+    cursor: Cursor,
 }
 
-// TODO(#45): EditField does not support selections
-// TODO(#46): EditField does not support multiple lines (newlines)
-// TODO(#47): EditField does not have a way to jump one word forward/backward
 // TODO(#48): Some sort of clipboard support for EditField
 
 impl EditField {
@@ -17,7 +22,10 @@ impl EditField {
         Self {
             text: Vec::new(),
             buffer: Vec::new(),
-            cursor: 0,
+            cursor: Cursor{
+                position: 0,
+                selection_offset: 0
+            },
         }
     }
 
@@ -25,43 +33,112 @@ impl EditField {
         Box::new(Self::new())
     }
 
+    fn selection(&mut self) -> Option<Range<usize>> {
+        let selection_border = (self.cursor.position as i32 + self.cursor.selection_offset) as usize;
+
+        match self.cursor.selection_offset.cmp(&0) {
+            Ordering::Less => {
+                let selection_start = max(selection_border, 0);
+                Some(selection_start..self.cursor.position)
+            }
+            Ordering::Equal => None,
+            Ordering::Greater => {
+                let selection_end = min(selection_border, self.text.len());
+                Some(self.cursor.position..selection_end)
+            }
+        }
+    }
+
+    fn delete_selection(&mut self, selection: Range<usize>) {
+        self.cursor.position = selection.start;
+        self.text.drain(selection);
+        self.unselect()
+    }
+
+    fn unselect(&mut self) {
+        self.cursor.selection_offset = 0
+    }
+
     pub fn left(&mut self) {
-        if self.cursor > 0 {
-            self.cursor -= 1;
+        if self.cursor.position > 0 {
+            self.cursor.position -= 1;
+            self.unselect();
         }
     }
 
     pub fn right(&mut self) {
-        if self.cursor < self.text.len() {
-            self.cursor += 1;
+        if self.cursor.position < self.text.len() {
+            self.cursor.position += 1;
+            self.unselect()
         }
     }
 
     pub fn delete_back(&mut self) {
-        if self.cursor > 0 {
-            self.cursor -= 1;
-            self.text.remove(self.cursor);
+        match self.selection() {
+            None => {
+                if self.cursor.position > 0 {
+                    self.left();
+                    self.text.remove(self.cursor.position);
+                }
+            }
+            Some(selection) => {
+                self.delete_selection(selection);
+            }
         }
+
     }
 
     pub fn delete_front(&mut self) {
-        if self.cursor < self.text.len() {
-            self.text.remove(self.cursor);
+        match self.selection() {
+            None => {
+                if self.cursor.position < self.text.len() {
+                    self.text.remove(self.cursor.position);
+                }
+            }
+            Some(selection) => {
+                self.delete_selection(selection);
+            }
         }
+
     }
 
     pub fn insert_chars(&mut self, cs: &[char]) {
-        if self.cursor >= self.text.len() {
+        match self.selection() {
+            None => {
+            }
+            Some(selection) => {
+                self.delete_selection(selection)
+            }
+        }
+
+        if self.cursor.position >= self.text.len() {
             self.text.extend_from_slice(cs);
-            self.cursor += cs.len();
+            self.cursor.position += cs.len();
         } else {
             for c in cs.iter() {
-                self.text.insert(self.cursor, *c);
-                self.cursor += 1;
+                self.text.insert(self.cursor.position, *c);
+                self.cursor.position += 1;
             }
+        }
+        self.unselect()
+    }
+
+    pub fn select_left(&mut self) {
+        if (self.cursor.position as i32 + self.cursor.selection_offset) > 0 {
+            self.cursor.selection_offset -= 1;
+        }
+    }
+
+    pub fn select_right(&mut self) {
+        if (self.cursor.position as i32 + self.cursor.selection_offset) < self.text.len() as i32 {
+            self.cursor.selection_offset += 1;
         }
     }
 }
+
+// TODO(#46): EditField does not support multiple lines (newlines)
+// TODO(#47): EditField does not have a way to jump one word forward/backward
+
 
 impl Widget for EditField {
     fn render(&mut self, _context: &mut Rcui, rect: &Rect, active: bool) {
@@ -71,16 +148,37 @@ impl Widget for EditField {
         // TODO(#35): EditField does not wrap during the rendering
         addstr(&self.text.iter().collect::<String>());
         if active {
-            mv(y, x + self.cursor as i32);
-            attron(COLOR_PAIR(style::CURSOR_PAIR));
-            if self.cursor >= self.text.len() {
-                addstr(" ");
-            } else {
-                addstr(&self.text[self.cursor].to_string());
+            // TODO: Extract highlight function to remove code duplication
+            // TODO: Differentiate the cursor during selection
+            //  there is no difference from the normal cursor when you are selecting only one character
+            //  but the behavior is different (insertion will delete the highlighted character)
+            match self.selection() {
+                None => {
+                    mv(y, x + self.cursor.position as i32);
+                    attron(COLOR_PAIR(style::CURSOR_PAIR));
+                    if self.cursor.position >= self.text.len() {
+                        addstr(" ");
+                    } else {
+                        addstr(&self.text[self.cursor.position].to_string());
+                    }
+                    attroff(COLOR_PAIR(style::CURSOR_PAIR));
+                }
+                Some(selection) => {
+                    for position in selection {
+                        mv(y, x + position as i32);
+                        attron(COLOR_PAIR(style::CURSOR_PAIR));
+                        if position >= self.text.len() {
+                            addstr(" ");
+                        } else {
+                            addstr(&self.text[position].to_string());
+                        }
+                        attroff(COLOR_PAIR(style::CURSOR_PAIR));
+                    }
+                }
             }
-            attroff(COLOR_PAIR(style::CURSOR_PAIR));
         }
     }
+
 
     fn handle_event(&mut self, _context: &mut Rcui, event: &Event) {
         // TODO(#37): move the utf8 buffer mechanism to the main event loop

@@ -10,6 +10,8 @@ fn main() {
                     KEY_RIGHT => field.right(),
                     KEY_DC => field.delete_front(),
                     KEY_BACKSPACE => field.delete_back(),
+                    KEY_F1 => field.select_left(),
+                    KEY_F2 => field.select_right(),
                     _ => {
                         if *key as u8 as char == '\n' {
                             rcui.quit()
