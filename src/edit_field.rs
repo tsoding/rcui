@@ -159,9 +159,6 @@ impl Widget for EditField {
         // TODO(#35): EditField does not wrap during the rendering
         addstr(&self.text.iter().collect::<String>());
         if active {
-            // TODO(#51): Differentiate the cursor during selection
-            //  there is no difference from the normal cursor when you are selecting only one character
-            //  but the behavior is different (insertion will delete the highlighted character)
             match self.selection() {
                 None => {
                     mv(y, x + self.cursor.position as i32);
@@ -176,13 +173,13 @@ impl Widget for EditField {
                 Some(selection) => {
                     for position in selection {
                         mv(y, x + position as i32);
-                        attron(COLOR_PAIR(style::CURSOR_PAIR));
+                        attron(COLOR_PAIR(style::SELECTION_PAIR));
                         if position >= self.text.len() {
                             addstr(" ");
                         } else {
                             addstr(&self.text[position].to_string());
                         }
-                        attroff(COLOR_PAIR(style::CURSOR_PAIR));
+                        attroff(COLOR_PAIR(style::SELECTION_PAIR));
                     }
                 }
             }
