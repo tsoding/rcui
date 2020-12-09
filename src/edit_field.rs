@@ -81,7 +81,9 @@ impl EditField {
     }
 
     pub fn left_skip_while(&mut self, p: fn(char) -> bool) {
-        while self.cursor.position > 0 && (self.cursor.position >= self.text.len() || p(self.text[self.cursor.position])) {
+        while self.cursor.position > 0
+            && (self.cursor.position >= self.text.len() || p(self.text[self.cursor.position]))
+        {
             self.left();
         }
     }
