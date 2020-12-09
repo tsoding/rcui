@@ -55,13 +55,15 @@ pub fn screen_rect() -> Rect {
 }
 
 pub struct Rcui {
-    pub event_queue: VecDeque<Event>,
+    event_queue: VecDeque<Event>,
+    clipboard: Vec<char>,
 }
 
 impl Rcui {
     fn new() -> Self {
         Self {
             event_queue: VecDeque::new(),
+            clipboard: Vec::new(),
         }
     }
 
@@ -128,6 +130,15 @@ impl Rcui {
         }
 
         endwin();
+    }
+
+    pub fn put_to_clipboard(&mut self, text: &[char]) {
+        self.clipboard.clear();
+        self.clipboard.extend_from_slice(text);
+    }
+
+    pub fn get_clipboard(&self) -> &[char] {
+        &self.clipboard
     }
 
     pub fn quit(&mut self) {
