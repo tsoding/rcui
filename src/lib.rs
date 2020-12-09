@@ -82,10 +82,7 @@ impl Rcui {
         keypad(stdscr(), true);
         timeout(10);
 
-        start_color();
-        init_pair(style::REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
-        init_pair(style::CURSOR_PAIR, COLOR_BLACK, COLOR_WHITE);
-        init_pair(style::INACTIVE_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
+        style::init_style();
 
         curs_set(CURSOR_INVISIBLE);
 
