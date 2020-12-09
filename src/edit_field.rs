@@ -61,16 +61,30 @@ impl EditField {
     }
 
     pub fn left(&mut self) {
-        if self.cursor.position > 0 {
-            self.cursor.position -= 1;
-            self.unselect();
+        match self.selection() {
+            None => {
+                if self.cursor.position > 0 {
+                    self.cursor.position -= 1;
+                }
+            }
+            Some(selection) => {
+                self.cursor.position = selection.start;
+                self.unselect();
+            }
         }
     }
 
     pub fn right(&mut self) {
-        if self.cursor.position < self.text.len() {
-            self.cursor.position += 1;
-            self.unselect()
+        match self.selection() {
+            None => {
+                if self.cursor.position < self.text.len() {
+                    self.cursor.position += 1;
+                }
+            }
+            Some(selection) => {
+                self.cursor.position = selection.end;
+                self.unselect();
+            }
         }
     }
 
