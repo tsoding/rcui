@@ -74,6 +74,31 @@ impl EditField {
         self.cursor.selection_offset = 0
     }
 
+    pub fn right_skip_while(&mut self, p: fn(char) -> bool) {
+        while self.cursor.position < self.text.len() && p(self.text[self.cursor.position]) {
+            self.right();
+        }
+    }
+
+    pub fn left_skip_while(&mut self, p: fn(char) -> bool) {
+        while self.cursor.position > 0
+            && (self.cursor.position >= self.text.len() || p(self.text[self.cursor.position]))
+        {
+            self.left();
+        }
+    }
+
+    pub fn right_word(&mut self) {
+        self.right_skip_while(|x| x.is_whitespace());
+        self.right_skip_while(|x| !x.is_whitespace());
+    }
+
+    // TODO(#55): left_word does not really work like in emacs
+    pub fn left_word(&mut self) {
+        self.left_skip_while(|x| x.is_whitespace());
+        self.left_skip_while(|x| !x.is_whitespace());
+    }
+
     pub fn left(&mut self) {
         match self.selection() {
             None => {

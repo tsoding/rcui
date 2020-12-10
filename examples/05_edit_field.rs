@@ -15,6 +15,8 @@ fn main() {
                     KEY_F2 => field.select_right(),
                     KEY_F3 => field.put_selection_to_clipboard(rcui),
                     KEY_F4 => field.paste_from_clipboard(rcui),
+                    KEY_F5 => field.left_word(),
+                    KEY_F6 => field.right_word(),
                     _ => {
                         if *key as u8 as char == '\n' {
                             rcui.quit()
