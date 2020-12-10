@@ -201,7 +201,6 @@ impl EditField {
 }
 
 // TODO(#46): EditField does not support multiple lines (newlines)
-// TODO(#47): EditField does not have a way to jump one word forward/backward
 
 impl Widget for EditField {
     fn render(&mut self, _context: &mut Rcui, rect: &Rect, active: bool) {
