@@ -136,12 +136,18 @@ impl EditField {
         }
 
         if self.cursor.position >= self.text.len() {
-            self.text.extend_from_slice(cs);
-            self.cursor.position += cs.len();
+            for c in cs.iter() {
+                if !c.is_control() {
+                    self.text.push(*c);
+                    self.cursor.position += 1;
+                }
+            }
         } else {
             for c in cs.iter() {
-                self.text.insert(self.cursor.position, *c);
-                self.cursor.position += 1;
+                if !c.is_control() {
+                    self.text.insert(self.cursor.position, *c);
+                    self.cursor.position += 1;
+                }
             }
         }
         self.unselect()
