@@ -93,10 +93,19 @@ impl EditField {
         self.right_skip_while(|x| !x.is_whitespace());
     }
 
-    // TODO(#55): left_word does not really work like in emacs
     pub fn left_word(&mut self) {
-        self.left_skip_while(|x| x.is_whitespace());
-        self.left_skip_while(|x| !x.is_whitespace());
+        self.left();
+
+        if self.text[self.cursor.position].is_whitespace() {
+            self.left_skip_while(|x| x.is_whitespace());
+            self.left_skip_while(|x| !x.is_whitespace());
+        } else {
+            self.left_skip_while(|x| !x.is_whitespace());
+        }
+
+        if self.cursor.position > 0 {
+            self.right();
+        }
     }
 
     pub fn left(&mut self) {
