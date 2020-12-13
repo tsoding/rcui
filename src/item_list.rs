@@ -1,7 +1,7 @@
 use super::*;
 pub struct Window {
     pub offset: usize,
-    pub height: usize
+    pub height: usize,
 }
 
 pub struct ItemList<T> {
@@ -18,7 +18,7 @@ impl<T: ToString + Clone> ItemList<T> {
             window: Window {
                 offset: 0,
                 height: 0,
-            }
+            },
         }
     }
 
