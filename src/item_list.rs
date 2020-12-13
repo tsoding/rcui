@@ -96,7 +96,6 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
     fn render(&mut self, _context: &mut Rcui, rect: &Rect, active: bool) {
         let h = rect.h.floor() as usize;
         if h > 0 {
-            println!("{}", self.window.offset);
             self.sync_window(h);
             for i in 0..h {
                 if self.window.offset + i < self.items.len() {
