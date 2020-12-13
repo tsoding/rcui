@@ -27,7 +27,7 @@ impl<T: ToString + Clone> ItemList<T> {
 
     // TODO: Define and extract how many lines page-down / page=-up jump
     pub fn page_up(&mut self) {
-        for _ in 0..15 {
+        for _ in 0..40 {
             self.up();
 
             if self.cursor == 0 {
@@ -44,7 +44,7 @@ impl<T: ToString + Clone> ItemList<T> {
     }
 
     pub fn page_down(&mut self) {
-        for _ in 0..15 {
+        for _ in 0..40 {
             self.down();
 
             if self.cursor == self.items.len() - 1 {
