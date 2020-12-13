@@ -1,10 +1,13 @@
 use super::*;
+pub struct Window {
+    pub offset: usize,
+    pub height: usize
+}
 
 pub struct ItemList<T> {
     pub items: Vec<T>,
     pub cursor: usize,
-    pub scroll: usize,
-    pub n_visible_items: usize,
+    pub window: Window,
 }
 
 impl<T: ToString + Clone> ItemList<T> {
@@ -12,8 +15,10 @@ impl<T: ToString + Clone> ItemList<T> {
         Self {
             items,
             cursor: 0,
-            scroll: 0,
-            n_visible_items: 0,
+            window: Window {
+                offset: 0,
+                height: 0,
+            }
         }
     }
 
@@ -29,7 +34,7 @@ impl<T: ToString + Clone> ItemList<T> {
 
     // TODO: Define and extract how many lines page-down / page=-up jump
     pub fn page_up(&mut self) {
-        for _ in 0..self.n_visible_items {
+        for _ in 0..self.window.height {
             self.up();
 
             if self.cursor == 0 {
@@ -46,7 +51,7 @@ impl<T: ToString + Clone> ItemList<T> {
     }
 
     pub fn page_down(&mut self) {
-        for _ in 0..self.n_visible_items {
+        for _ in 0..self.window.height {
             self.down();
 
             if self.cursor == self.items.len() - 1 {
@@ -56,12 +61,12 @@ impl<T: ToString + Clone> ItemList<T> {
     }
 
     pub fn sync_window(&mut self, h: usize) {
-        self.n_visible_items = h;
+        self.window.height = h;
 
-        if self.cursor >= self.scroll + h {
-            self.scroll = self.cursor - h + 1;
-        } else if self.cursor < self.scroll {
-            self.scroll = self.cursor;
+        if self.cursor >= self.window.offset + h {
+            self.window.offset = self.cursor - h + 1;
+        } else if self.cursor < self.window.offset {
+            self.window.offset = self.cursor;
         }
     }
 
@@ -91,10 +96,11 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
     fn render(&mut self, _context: &mut Rcui, rect: &Rect, active: bool) {
         let h = rect.h.floor() as usize;
         if h > 0 {
+            println!("{}", self.window.offset);
             self.sync_window(h);
             for i in 0..h {
-                if self.scroll + i < self.items.len() {
-                    let selected = i + self.scroll == self.cursor;
+                if self.window.offset + i < self.items.len() {
+                    let selected = i + self.window.offset == self.cursor;
                     let color_pair = if selected {
                         if active {
                             style::CURSOR_PAIR
@@ -110,7 +116,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
                     let y = (rect.y + i as f32).floor() as i32;
                     let w = rect.w.floor() as usize;
                     mv(y, x);
-                    let text = self.items[i + self.scroll].to_string();
+                    let text = self.items[i + self.window.offset].to_string();
                     if text.len() >= w {
                         addstr(text.get(..w).unwrap_or(&text));
                     } else {
