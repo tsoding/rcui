@@ -4,6 +4,7 @@ pub struct ItemList<T> {
     pub items: Vec<T>,
     pub cursor: usize,
     pub scroll: usize,
+    pub n_visible_items: usize,
 }
 
 impl<T: ToString + Clone> ItemList<T> {
@@ -12,6 +13,7 @@ impl<T: ToString + Clone> ItemList<T> {
             items,
             cursor: 0,
             scroll: 0,
+            n_visible_items: 0,
         }
     }
 
@@ -27,7 +29,7 @@ impl<T: ToString + Clone> ItemList<T> {
 
     // TODO: Define and extract how many lines page-down / page=-up jump
     pub fn page_up(&mut self) {
-        for _ in 0..40 {
+        for _ in 0..self.n_visible_items {
             self.up();
 
             if self.cursor == 0 {
@@ -44,7 +46,7 @@ impl<T: ToString + Clone> ItemList<T> {
     }
 
     pub fn page_down(&mut self) {
-        for _ in 0..40 {
+        for _ in 0..self.n_visible_items {
             self.down();
 
             if self.cursor == self.items.len() - 1 {
@@ -59,6 +61,10 @@ impl<T: ToString + Clone> ItemList<T> {
         } else if self.cursor < self.scroll {
             self.scroll = self.cursor;
         }
+    }
+
+    pub fn sync_n_visible_items(&mut self, h: usize) {
+        self.n_visible_items = h;
     }
 
     pub fn push(&mut self, item: T) {
@@ -87,6 +93,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
     fn render(&mut self, _context: &mut Rcui, rect: &Rect, active: bool) {
         let h = rect.h.floor() as usize;
         if h > 0 {
+            self.sync_n_visible_items(h);
             self.sync_scroll(h);
             for i in 0..h {
                 if self.scroll + i < self.items.len() {
