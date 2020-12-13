@@ -32,7 +32,6 @@ impl<T: ToString + Clone> ItemList<T> {
         }
     }
 
-    // TODO: Define and extract how many lines page-down / page=-up jump
     pub fn page_up(&mut self) {
         for _ in 0..self.window.height {
             self.up();
