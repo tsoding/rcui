@@ -1,3 +1,4 @@
+use rcui::curses::*;
 use rcui::*;
 
 struct AddItem {
@@ -7,15 +8,19 @@ struct AddItem {
 fn item_list_controls(item_list: ItemList<String>) -> Box<Proxy<ItemList<String>>> {
     Proxy::wrap(
         |list, context, event| match event {
-            Event::KeyStroke(key) => match *key as u8 as char {
-                'j' => list.down(),
-                'k' => list.up(),
-                '\n' => {
-                    if let Some(item) = list.remove() {
-                        context.push_event(Event::Custom(Box::new(AddItem { label: item })));
+            Event::KeyStroke(key) => match *key {
+                KEY_NPAGE => list.page_down(),
+                KEY_PPAGE => list.page_up(),
+                key => match key as u8 as char {
+                    'j' => list.down(),
+                    'k' => list.up(),
+                    '\n' => {
+                        if let Some(item) = list.remove() {
+                            context.push_event(Event::Custom(Box::new(AddItem { label: item })));
+                        }
                     }
-                }
-                _ => {}
+                    _ => {}
+                },
             },
             Event::Custom(event) => {
                 if let Some(add_item) = event.downcast_ref::<AddItem>() {
