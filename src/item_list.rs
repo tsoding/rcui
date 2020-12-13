@@ -55,16 +55,14 @@ impl<T: ToString + Clone> ItemList<T> {
         }
     }
 
-    pub fn sync_scroll(&mut self, h: usize) {
+    pub fn sync_window(&mut self, h: usize) {
+        self.n_visible_items = h;
+
         if self.cursor >= self.scroll + h {
             self.scroll = self.cursor - h + 1;
         } else if self.cursor < self.scroll {
             self.scroll = self.cursor;
         }
-    }
-
-    pub fn sync_n_visible_items(&mut self, h: usize) {
-        self.n_visible_items = h;
     }
 
     pub fn push(&mut self, item: T) {
@@ -93,8 +91,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
     fn render(&mut self, _context: &mut Rcui, rect: &Rect, active: bool) {
         let h = rect.h.floor() as usize;
         if h > 0 {
-            self.sync_n_visible_items(h);
-            self.sync_scroll(h);
+            self.sync_window(h);
             for i in 0..h {
                 if self.scroll + i < self.items.len() {
                     let selected = i + self.scroll == self.cursor;
