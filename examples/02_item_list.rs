@@ -1,3 +1,4 @@
+use rcui::curses::*;
 use rcui::*;
 
 fn title(title: &str, widget: Box<dyn Widget>) -> Box<dyn Widget> {
@@ -22,11 +23,15 @@ fn main() {
         Proxy::wrap(
             |list, context, event| {
                 if let Event::KeyStroke(key) = event {
-                    match *key as u8 as char {
-                        'q' => context.quit(),
-                        'j' => list.down(),
-                        'k' => list.up(),
-                        _ => {}
+                    match *key {
+                        KEY_NPAGE => list.page_down(),
+                        KEY_PPAGE => list.page_up(),
+                        key => match key as u8 as char {
+                            'q' => context.quit(),
+                            'j' => list.down(),
+                            'k' => list.up(),
+                            _ => {}
+                        },
                     }
                 }
             },

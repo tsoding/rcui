@@ -25,10 +25,31 @@ impl<T: ToString + Clone> ItemList<T> {
         }
     }
 
+    // TODO: Define and extract how many lines page-down / page=-up jump
+    pub fn page_up(&mut self) {
+        for _ in 0..15 {
+            self.up();
+
+            if self.cursor == 0 {
+                break;
+            }
+        }
+    }
+
     pub fn down(&mut self) {
         let n = self.items.len();
         if n > 0 && self.cursor < n - 1 {
             self.cursor += 1;
+        }
+    }
+
+    pub fn page_down(&mut self) {
+        for _ in 0..15 {
+            self.down();
+
+            if self.cursor == self.items.len() - 1 {
+                break;
+            }
         }
     }
 
@@ -60,7 +81,6 @@ impl<T: ToString + Clone> ItemList<T> {
 
     // TODO(#8): Operations to insert new items into the ItemList
     // TODO(#9): Operations to remove items from ItemList
-    // TODO(#14): Operations for page-up/page-down for ItemList
 }
 
 impl<T: ToString + Clone> Widget for ItemList<T> {
