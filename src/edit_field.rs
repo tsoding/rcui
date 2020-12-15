@@ -96,7 +96,8 @@ impl EditField {
     pub fn left_word(&mut self) {
         self.left();
 
-        if self.cursor.position < self.text.len() && self.text[self.cursor.position].is_whitespace() {
+        if self.cursor.position < self.text.len() && self.text[self.cursor.position].is_whitespace()
+        {
             self.left_skip_while(|x| x.is_whitespace());
             self.left_skip_while(|x| !x.is_whitespace());
         } else {
