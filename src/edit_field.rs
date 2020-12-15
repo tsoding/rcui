@@ -93,10 +93,20 @@ impl EditField {
         self.right_skip_while(|x| !x.is_whitespace());
     }
 
-    // TODO(#55): left_word does not really work like in emacs
     pub fn left_word(&mut self) {
-        self.left_skip_while(|x| x.is_whitespace());
-        self.left_skip_while(|x| !x.is_whitespace());
+        self.left();
+
+        if self.cursor.position < self.text.len() && self.text[self.cursor.position].is_whitespace()
+        {
+            self.left_skip_while(|x| x.is_whitespace());
+            self.left_skip_while(|x| !x.is_whitespace());
+        } else {
+            self.left_skip_while(|x| !x.is_whitespace());
+        }
+
+        if self.cursor.position > 0 {
+            self.right();
+        }
     }
 
     pub fn left(&mut self) {
@@ -192,7 +202,6 @@ impl EditField {
 }
 
 // TODO(#46): EditField does not support multiple lines (newlines)
-// TODO(#47): EditField does not have a way to jump one word forward/backward
 
 impl Widget for EditField {
     fn render(&mut self, _context: &mut Rcui, rect: &Rect, active: bool) {
