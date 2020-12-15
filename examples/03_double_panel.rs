@@ -1,13 +1,18 @@
+use rcui::curses::*;
 use rcui::*;
 
 fn item_list_controls<T: ToString + Clone>(item_list: ItemList<T>) -> Box<Proxy<ItemList<T>>> {
     Proxy::wrap(
         |list, _, event| {
             if let Event::KeyStroke(key) = event {
-                match *key as u8 as char {
-                    'j' => list.down(),
-                    'k' => list.up(),
-                    _ => {}
+                match *key {
+                    KEY_NPAGE => list.page_down(),
+                    KEY_PPAGE => list.page_up(),
+                    key => match key as u8 as char {
+                        'j' => list.down(),
+                        'k' => list.up(),
+                        _ => {}
+                    },
                 }
             }
         },
