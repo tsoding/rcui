@@ -73,6 +73,28 @@ impl<T: ToString + Clone> ItemList<T> {
         self.items.push(item)
     }
 
+    pub fn insert_after(&mut self, item: T) {
+        if self.cursor >= self.items.len() {
+            self.items.push(item);
+            self.cursor = 0;
+        } else if self.cursor + 1 >= self.items.len() {
+            self.items.push(item);
+            self.cursor += 1;
+        } else {
+            self.items.insert(self.cursor + 1, item);
+            self.cursor += 1;
+        }
+    }
+
+    pub fn insert_before(&mut self, item: T) {
+        if self.cursor >= self.items.len() {
+            self.items.push(item);
+            self.cursor = 0;
+        } else {
+            self.items.insert(self.cursor, item);
+        }
+    }
+
     pub fn remove(&mut self) -> Option<T> {
         if !self.items.is_empty() {
             let item = self.items.remove(self.cursor);

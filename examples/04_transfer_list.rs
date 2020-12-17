@@ -24,7 +24,7 @@ fn item_list_controls(item_list: ItemList<String>) -> Box<Proxy<ItemList<String>
             },
             Event::Custom(event) => {
                 if let Some(add_item) = event.downcast_ref::<AddItem>() {
-                    list.push(add_item.label.clone());
+                    list.insert_after(add_item.label.clone());
                 }
             }
             _ => {}
